@@ -1,0 +1,30 @@
+---
+- name: Set timezone
+  copy: content="{{ timezone }}"
+        dest=/etc/timezone
+        owner=root
+        group=root
+        mode=0644
+        backup=yes
+
+- name: Install git
+  apt: name=git-core state=present
+
+- name: Install zsh
+  apt: name=zsh state=present
+
+- name: Clone oh-my-zsh repo
+  git: repo=https://github.com/robbyrussell/oh-my-zsh.git dest=/usr/local/share/.oh-my-zsh
+
+- name: Copy .zshrc
+  template: src=.zshrc dest=~/
+
+- name: Set zsh as default shell
+  user: name=root shell=/bin/zsh
+
+- group: name=admin state=present
+
+- user: name="{{ user }}" shell=/bin/zsh comment="{{ username }}" group=admin
+
+- name: Copy .zshrc
+  template: src=.zshrc dest="/home/{{ user }}"

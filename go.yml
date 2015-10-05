@@ -3,12 +3,11 @@
   remote_user: root
   gather_facts: no
 
-  tasks:
-    - name: Installs nginx web server
-      apt: pkg=nginx state=installed update_cache=true
-      notify:
-        - start nginx
+  vars_files:
+    - vars/vars.yml
 
-  handlers:
-    - name: start nginx
-      service: name=nginx state=started
+  roles:
+    - common
+    - nginx
+    - php-fpm
+    - mysql

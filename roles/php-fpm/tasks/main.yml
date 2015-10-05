@@ -1,0 +1,6 @@
+---
+- name: Install php-fpm and deps 
+  apt: name={{ item }} state=present
+  with_items:
+    - php5-fpm
+    - php5-mysql
