@@ -1,0 +1,14 @@
+---
+- hosts: droplet
+  remote_user: root
+  gather_facts: no
+
+  tasks:
+    - name: Remove nginx web server
+      apt: pkg=nginx state=removed update_cache=true
+      notify:
+        - remove nginx
+
+  handlers:
+    - name: start nginx
+      service: name=nginx state=started
