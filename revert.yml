@@ -14,6 +14,13 @@
         - nginx*
         - mysql*
         - php*
+        - git*
+        - zsh*
       sudo: yes
 
-    - user: name=max state=absent remove=yes
+    - user: name={{ user }} state=absent remove=yes
+
+    - name: Set sh as default shell
+      user: name=root shell=/bin/sh
+
+    - group: name=admin state=absent remove=yes

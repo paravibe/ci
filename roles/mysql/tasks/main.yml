@@ -1,6 +1,6 @@
 ---
 - name: Install Mysql package
-  apt: name=mysql-server state=present
+  apt: name=mysql-server state=present update_cache=yes
 
 - name: Create Mysql configuration file
   template: src=my.cnf dest=/etc/my.cnf
