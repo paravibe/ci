@@ -8,6 +8,8 @@
 
   roles:
     - common
+    - swap
+    - ntp
     - nginx
     - php-fpm
     - mysql

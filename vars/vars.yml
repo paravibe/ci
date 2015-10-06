@@ -3,3 +3,5 @@ user: max
 username: "Max Petyurenko"
 timezone: "Europe/Kiev"
 server_name: test.com
+swapfile_location: /swapfile
+swapfile_size: 4G
