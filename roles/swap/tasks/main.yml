@@ -1,6 +1,6 @@
 ---
 - name: Check swapfile  
-  shell: 'sudo swapon -s | grep -E "^/"'  
+  shell: 'sudo swapon -s | grep -E "^/"'
   register: swapfile  
   ignore_errors: yes 
 

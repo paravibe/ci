@@ -1,8 +1,37 @@
 ---
-- name: Install Mysql package
+- name: Install MySQL package
   apt: name=mysql-server state=present update_cache=yes
+  register: install_mysql
 
-- name: Create Mysql configuration file
+- name: Install MySQLdb Python
+  apt: name=python-mysqldb state=present update_cache=yes
+
+- name: Configure MySQL
+  command: mysql_install_db
+  sudo: true
+
+- name: Delete anonymous MySQL server user
+  action: mysql_user user="" state="absent"
+  when: install_mysql.changed
+
+- name: Remove the MySQL test database
+  action: mysql_db db=test state=absent
+  when: install_mysql.changed
+
+- name: Change root user password on first run
+  mysql_user: login_user=root
+              login_password=''
+              name=root
+              password={{ mysql_root_password }}
+              priv=*.*:ALL,GRANT
+              host={{ item }}
+  with_items:
+    - 127.0.0.1
+    - ::1
+    - localhost
+  when: install_mysql.changed
+
+- name: Create MySQL configuration file
   template: src=my.cnf dest=/etc/my.cnf
   notify: 
   - restart mysql
