@@ -3,7 +3,19 @@
   remote_user: root
   gather_facts: no
 
+  vars_files:
+    - vars/vars.yml
+
   tasks:
+    - name: Remove sudo user
+      user: name="{{ user }}" state=absent remove=yes
+    
+    - name: Set bash as default shell for root user
+      user: name=root shell=/bin/bash
+
+    - name: Fix Uninstall
+      shell: dpkg --configure -a
+
     - name: Uninstall all packages
       apt: >
         pkg={{ item }} 
@@ -15,12 +27,15 @@
         - mysql*
         - php*
         - git*
+        - ntp*
         - zsh*
       sudo: yes
 
-    - user: name={{ user }} state=absent remove=yes
-
-    - name: Set sh as default shell
-      user: name=root shell=/bin/sh
-
-    - group: name=admin state=absent remove=yes
+    - file: path={{ item }} state=absent
+      with_items:
+        - /var/lib/mysql
+        - /var/log/mysql
+        - /etc/mysql
+        - /etc/nginx
+        - /usr/local/share/.oh-my-zsh
+        - ~/.zshrc

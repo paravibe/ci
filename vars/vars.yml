@@ -1,5 +1,6 @@
 ---
 user: max
+passwd: test
 username: "Max Petyurenko"
 timezone: "Europe/Kiev"
 server_name: test.com
