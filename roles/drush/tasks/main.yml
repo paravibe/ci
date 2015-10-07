@@ -1,0 +1,9 @@
+---
+- name: Clone drush repo
+  git: repo=https://github.com/drush-ops/drush.git dest=/usr/local/src/drush version=7.0.0 force=yes update=yes
+
+- name: Create symlink for drush
+  file: src=/usr/local/src/drush/drush dest=/usr/bin/drush state=link force=yes
+
+- name: Run composer install
+  composer: command=install working_dir=/usr/local/src/drush

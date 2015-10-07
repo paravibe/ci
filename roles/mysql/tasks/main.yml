@@ -1,10 +1,10 @@
 ---
 - name: Install MySQL package
-  apt: name=mysql-server state=present update_cache=yes
+  apt: name=mysql-server state=present
   register: install_mysql
 
 - name: Install MySQLdb Python
-  apt: name=python-mysqldb state=present update_cache=yes
+  apt: name=python-mysqldb state=present
 
 - name: Configure MySQL
   command: mysql_install_db

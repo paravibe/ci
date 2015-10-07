@@ -6,6 +6,10 @@
   vars_files:
     - vars/vars.yml
 
+  pre_tasks:
+    - name: Update aptitude
+      apt: update_cache=yes
+
   roles:
     - common
     - swap
@@ -13,3 +17,5 @@
     - nginx
     - php-fpm
     - mysql
+    - ansible-composer
+    - drush

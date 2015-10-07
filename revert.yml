@@ -7,12 +7,6 @@
     - vars/vars.yml
 
   tasks:
-    - name: Remove sudo user
-      user: name="{{ user }}" state=absent remove=yes
-    
-    - name: Set bash as default shell for root user
-      user: name=root shell=/bin/bash
-
     - name: Fix Uninstall
       shell: dpkg --configure -a
 
@@ -31,11 +25,20 @@
         - zsh*
       sudo: yes
 
+    - name: Remove sudo user
+      user: name="{{ user }}" state=absent remove=yes
+
+    - name: Set bash as default shell for root user
+      user: name=root shell=/bin/bash
+
     - file: path={{ item }} state=absent
       with_items:
         - /var/lib/mysql
         - /var/log/mysql
         - /etc/mysql
         - /etc/nginx
-        - /usr/local/share/.oh-my-zsh
+        - /usr/local/src/.oh-my-zsh
         - ~/.zshrc
+        - /usr/local/bin/composer
+        - /usr/local/src/drush
+        - /usr/bin/drush
