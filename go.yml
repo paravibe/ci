@@ -1,7 +1,6 @@
 ---
 - hosts: droplet
   remote_user: root
-  gather_facts: no
 
   vars_files:
     - vars/vars.yml
@@ -19,3 +18,5 @@
     - mysql
     - ansible-composer
     - drush
+    - nodejs
+    - postfix
