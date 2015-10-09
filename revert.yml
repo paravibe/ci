@@ -7,15 +7,17 @@
     - vars/vars.yml
 
   tasks:
+    - name: Set bash as default shell for root user
+      user: name=root shell=/bin/bash
+
+    - name: Remove sudo user
+      user: name="{{ user }}" state=absent remove=yes
+
     - name: Fix Uninstall
       shell: dpkg --configure -a
 
     - name: Uninstall all packages
-      apt: >
-        pkg={{ item }} 
-        state=absent
-        purge=yes
-        force=yes
+      apt: pkg={{ item }} state=absent purge=yes force=yes
       with_items:
         - nginx*
         - mysql*
@@ -23,13 +25,11 @@
         - git*
         - ntp*
         - zsh*
+        - nodejs*
+        - npm*
+        - postfix*
+        - mailutils*
       sudo: yes
-
-    - name: Remove sudo user
-      user: name="{{ user }}" state=absent remove=yes
-
-    - name: Set bash as default shell for root user
-      user: name=root shell=/bin/bash
 
     - file: path={{ item }} state=absent
       with_items:
@@ -42,3 +42,4 @@
         - /usr/local/bin/composer
         - /usr/local/src/drush
         - /usr/bin/drush
+        - /etc/postfix
