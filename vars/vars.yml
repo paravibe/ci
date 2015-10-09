@@ -1,9 +1,26 @@
 ---
+# Users.
+rootpasswd: test
 user: max
 passwd: test
 username: "Max Petyurenko"
+
+# Timezone.
 timezone: "Europe/Kiev"
-server_name: test.com
+
+# Domain.
+server_name: "{{ ansible_hostname }}"
+
+# Swap file.
 swapfile_location: /swapfile
 swapfile_size: 4G
+
+# MySQL.
 mysql_root_password: toor
+
+# Postfix.
+postfix_hostname: test.com
+postfix_relayhost: '[smtp.gmail.com]:587'
+postfix_email: test@gmail.com
+postfix_email_passwd: test
+postfix_notify_email: notify@gmail.com
