@@ -1,0 +1,12 @@
+---
+- name: restart postfix
+  service: name=postfix state=restarted enabled=yes
+
+- name: postmap sasl
+  shell: postmap /etc/postfix/sasl/sasl_passwd
+  sudo: yes
+
+- name: send test email
+  shell: >
+    echo "This is a test message from {{ ansible_hostname }} at $(date -R)" | mail -s "Test Postfix" {{ postfix_notify_email }}
+  when: postfix_notify_email is defined

@@ -1,0 +1,28 @@
+---
+- name: Install postfix and dependencies
+  apt: name={{ item }} state=present
+  with_items:
+    - postfix
+    - mailutils
+    - libsasl2-2
+    - ca-certificates
+    - libsasl2-modules
+  notify:
+    - update timezone
+
+- name: Copy postfix configuration
+  template: src=main.cf dest=/etc/postfix/main.cf
+  notify:
+    - restart postfix
+    - send test email
+
+- name: Copy SMTP authentication
+  template: src=sasl_passwd dest=/etc/postfix/sasl/sasl_passwd mode=0400 owner=root group=root
+  notify:
+    - postmap sasl
+
+- name: Validate certificate
+  shell: cat /etc/ssl/certs/Thawte_Premium_Server_CA.pem | sudo tee -a /etc/postfix/cacert.pem
+
+- name: Start postfix on server boot
+  service: name=postfix state=started enabled=yes
