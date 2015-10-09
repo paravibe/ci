@@ -1,4 +1,11 @@
 ---
+- name: Generate password hash
+  shell: python -c 'import crypt; print crypt.crypt("{{ rootpasswd }}", "$1$afRgT$")'
+  register: rootpasswd_hash
+
+- name: Set new root password
+  user: name="root" password="{{ rootpasswd_hash.stdout }}"
+
 - name: Set timezone
   copy: content="{{ timezone }}"
         dest=/etc/timezone
@@ -6,6 +13,9 @@
         group=root
         mode=0644
         backup=yes
+
+- name: Install curl
+  apt: name=curl state=present
 
 - name: Install git
   apt: name=git-core state=present
