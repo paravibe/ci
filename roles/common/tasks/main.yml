@@ -1,10 +1,10 @@
 ---
-- name: Generate password hash
-  shell: python -c 'import crypt; print crypt.crypt("{{ rootpasswd }}", "$1$afRgT$")'
-  register: rootpasswd_hash
+- name: Generate password hash for root user
+  shell: python -c 'import crypt; print crypt.crypt("{{ root_pass }}", "$1$afRgT$")'
+  register: root_pass_hash
 
-- name: Set new root password
-  user: name="root" password="{{ rootpasswd_hash.stdout }}"
+- name: Set new root password and name
+  user: name="root" comment="{{ root_comment }}" password="{{ root_pass_hash.stdout }}"
 
 - name: Set timezone
   copy: content="{{ timezone }}"
@@ -13,34 +13,21 @@
         group=root
         mode=0644
         backup=yes
+  notify:
+    - update timezone
 
 - name: Install curl
   apt: name=curl state=present
 
-- name: Install git
-  apt: name=git-core state=present
-
-- name: Install zsh
-  apt: name=zsh state=present
-
-- name: Clone oh-my-zsh repo
-  git: repo=https://github.com/robbyrussell/oh-my-zsh.git dest=/usr/local/src/.oh-my-zsh
-
-- name: Copy .zshrc
-  template: src=.zshrc dest=~/
-
-- name: Set zsh as default shell
-  user: name=root shell=/bin/zsh
-
 - name: Add sudo group
   group: name=sudo state=present
 
-- name: Generate password hash
-  shell: python -c 'import crypt; print crypt.crypt("{{ passwd }}", "$1$afRgT$")'
-  register: passwd_hash
+- name: Generate password hash for "{{ sudo_user_pass }}"
+  shell: python -c 'import crypt; print crypt.crypt("{{ sudo_user_pass }}", "$1$afRgT$")'
+  register: sudo_user_pass_hash
 
-- name: Add new user
-  user: name="{{ user }}" shell=/bin/zsh comment="{{ username }}" group=sudo password="{{ passwd_hash.stdout }}"
+- name: Add "{{ sudo_user_pass }}" user
+  user: name="{{ sudo_user_name }}" shell=/bin/zsh comment="{{ sudo_user_comment }}" group=sudo password="{{ sudo_user_pass_hash.stdout }}"
 
-- name: Copy .zshrc
-  template: src=.zshrc dest="/home/{{ user }}"
+- name: Copy .zshrc for "{{ sudo_user_pass }}" user
+  command: cp /root/.zshrc "/home/{{ sudo_user_name }}"

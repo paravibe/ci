@@ -1,3 +1,5 @@
 ---
 - name: Install ntp
   apt: name=ntp state=present
+  notify:
+    - restart ntp

@@ -1,9 +1,10 @@
 ---
 # Users.
-rootpasswd: test
-user: max
-passwd: test
-username: "Max Petyurenko"
+root_pass: CHANGE_ME
+root_comment: "CHANGE_ME"
+sudo_user_name: CHANGE_ME
+sudo_user_pass: CHANGE_ME
+sudo_user_comment: "CHANGE_ME"
 
 # Timezone.
 timezone: "Europe/Kiev"
@@ -16,11 +17,11 @@ swapfile_location: /swapfile
 swapfile_size: 4G
 
 # MySQL.
-mysql_root_password: toor
+mysql_root_pass: CHANGE_ME
 
 # Postfix.
-postfix_hostname: test.com
+postfix_hostname: CHANGE_ME
 postfix_relayhost: '[smtp.gmail.com]:587'
-postfix_email: test@gmail.com
-postfix_email_passwd: test
-postfix_notify_email: notify@gmail.com
+postfix_email: CHANGE_ME
+postfix_email_pass: CHANGE_ME
+postfix_notify_email: CHANGE_ME

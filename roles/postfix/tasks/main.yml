@@ -7,8 +7,6 @@
     - libsasl2-2
     - ca-certificates
     - libsasl2-modules
-  notify:
-    - update timezone
 
 - name: Copy postfix configuration
   template: src=main.cf dest=/etc/postfix/main.cf

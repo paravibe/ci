@@ -2,6 +2,6 @@
 - name: Install nginx
   apt: name=nginx state=present
 
-- name: Copy nginx configuration
-  template: src=default dest=/etc/nginx/sites-available/default
+- name: Copy nginx configuration template
+  template: src=template dest=/etc/nginx/sites-available/template
   notify: restart nginx

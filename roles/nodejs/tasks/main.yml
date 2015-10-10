@@ -1,5 +1,5 @@
 ---
-- name: Install node.js
+- name: Install node.js and npm
   apt: name={{ item }} state=present
   with_items:
     - nodejs

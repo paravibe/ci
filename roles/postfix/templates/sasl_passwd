@@ -1,1 +1,1 @@
-{{ postfix_relayhost }} {{ postfix_email }}:{{ postfix_email_passwd }}
+{{ postfix_relayhost }} {{ postfix_email }}:{{ postfix_email_pass }}

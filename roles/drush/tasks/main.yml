@@ -1,5 +1,5 @@
 ---
-- name: Clone drush repo
+- name: Clone drush repository
   git: repo=https://github.com/drush-ops/drush.git dest=/usr/local/src/drush version=7.0.0 force=yes update=yes
 
 - name: Create symlink for drush

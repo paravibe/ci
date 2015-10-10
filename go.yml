@@ -6,6 +6,9 @@
     - vars/vars.yml
 
   pre_tasks:
+    - name: Add stable nginx repository
+      apt_repository: repo='ppa:nginx/stable'
+
     - name: Update aptitude
       apt: update_cache=yes
 
@@ -16,7 +19,6 @@
     - nginx
     - php-fpm
     - mysql
-    - ansible-composer
     - drush
     - nodejs
     - postfix
