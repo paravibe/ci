@@ -11,7 +11,7 @@
       user: name=root shell=/bin/bash
 
     - name: Remove sudo user
-      user: name="{{ user }}" state=absent remove=yes
+      user: name="{{ sudo_user_name }}" state=absent remove=yes
 
     - name: Fix Uninstall
       shell: dpkg --configure -a
