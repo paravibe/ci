@@ -1,0 +1,71 @@
+---
+- name: Generate new password
+  shell: echo "paravibe_$(date +%s)" | sha256sum | base64 | head -c 15; echo
+  register: user_pass
+
+- name: Create new user
+  user: >
+    name={{ instance_name }}
+    comment={{ instance_name | capitalize }}
+    password={{ user_pass.stdout }}
+    generate_ssh_key=yes
+    ssh_key_comment="{{ instance_name }}@{{ ansible_hostname }}"
+    update_password=on_create
+    state=present
+  register: user_create
+  notify:
+    - print user pass
+    - print ssh key
+    - send email
+
+- name: Check if zsh installed
+  stat: path=/bin/zsh
+  register: zsh
+  when: user_create.changed
+
+- name: Set zsh shell for user
+  user: name={{ instance_name }} shell=/bin/zsh
+  when: zsh.stat.exists
+  when: user_create.changed
+
+- name: Copy .zshrc
+  template: src=.zshrc dest="/home/{{ instance_name }}/.zshrc"
+  when: user_create.changed
+
+- name: Get user SSH key
+  shell: cat "/home/{{ instance_name }}/.ssh/id_rsa.pub"
+  register: user_ssh_key
+  when: user_create.changed
+
+- name: Add MySQL user
+  mysql_user: >
+    login_user=root
+    login_password="{{ mysql_root_pass }}"
+    name="{{ instance_name }}"
+    password="{{ user_pass.stdout }}"
+    priv="{{ instance_name }}"\_%.*:ALL,GRANT
+  notify:
+    - print user pass
+  when: user_create.changed
+
+- name: Add MySQL database
+  mysql_db: >
+    login_user=root
+    login_password="{{ mysql_root_pass }}"
+    name="{{ instance_name }}_{{ instance_env }}"
+    state=present
+
+- name: Create dir structure for user
+  file: path="/home/{{ instance_name }}/www/{{ instance_env }}/{{ item }}" owner="{{ instance_name }}" recurse=yes state=directory
+  with_items:
+    - htdocs
+    - logs
+
+- name: Create nginx virtual host
+  template: src=nginx_vhost dest="/etc/nginx/sites-available/{{ instance_name }}_{{ instance_env }}"
+
+- name: Enable vhost
+  file: >
+    src="/etc/nginx/sites-available/{{ instance_name }}_{{ instance_env }}" 
+    dest="/etc/nginx/sites-enabled/{{ instance_name }}_{{ instance_env }}"
+    state=link

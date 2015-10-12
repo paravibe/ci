@@ -1,0 +1,9 @@
+---
+- hosts: droplet
+  remote_user: root
+
+  vars_files:
+    - vars/instance.yml
+
+  roles:
+    - create_instance

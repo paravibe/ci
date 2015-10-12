@@ -1,0 +1,11 @@
+---
+- name: print user pass
+  debug: msg="User password - {{ user_pass.stdout }}"
+
+- name: print ssh key
+  debug: msg="User SSH key - {{ user_ssh_key.stdout }}"
+
+- name: send email
+  shell: >
+    echo "Password: {{ user_pass.stdout }}\r\nSSH key: {{ user_ssh_key.stdout }}" | mail -s "Instance {{ instance_name }} {{ instance_env | upper }} has been created" {{ notify_email }}
+  when: notify_email is defined

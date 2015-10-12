@@ -1,0 +1,21 @@
+server {
+    listen       80;
+    server_name  {{ instance_name }}.{{ instance_env }}.{{ instance_domain }};
+    root         /home/{{ instance_name }}/www/{{ instance_env }}/htdocs/{% if www_relative_dir is defined and www_relative_dir != false %}{{ www_relative_dir }}{% endif %};
+    index        index.php;
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico) {
+        expires 180d;
+        add_header Pragma public;
+        add_header Cache-Control "public";
+        log_not_found off;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass unix:/var/run/php5-fpm.sock;
+        fastcgi_index index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}

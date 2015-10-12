@@ -1,0 +1,18 @@
+---
+# Instance name. Use lowercase name.
+instance_name: paravibe
+
+# Environment name. E.g. qa or stage.
+instance_env: qa
+
+# Domain name.
+instance_domain: paravibe.com
+
+# Relative path for site. Without slashes.
+www_relative_dir: false
+
+# MySQL root password.
+mysql_root_pass: root
+
+# Passwords will be send to this email address.
+notify_email: paravibe@gmail.com
