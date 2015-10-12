@@ -1,6 +1,6 @@
 ---
 - name: Generate new password
-  shell: echo "paravibe_$(date +%s)" | sha256sum | base64 | head -c 15; echo
+  shell: echo "{{ password_salt }}_$(date +%s)" | sha256sum | base64 | head -c 16; echo
   register: user_pass
 
 - name: Create new user
