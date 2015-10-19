@@ -19,3 +19,7 @@ mysql_root_pass: CHANGE_ME
 
 # Passwords will be send to this email address.
 notify_email: CHANGE_ME
+
+# Basic authentification password.
+basic_auth_create: true
+basic_auth_password: "{{ instance_name }}2015"

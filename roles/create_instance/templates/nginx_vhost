@@ -7,6 +7,11 @@ server {
 
     ssl_certificate /etc/nginx/ssl/nginx.crt;
     ssl_certificate_key /etc/nginx/ssl/nginx.key;
+    {% if basic_auth_create %}
+
+    auth_basic "Restricted";
+    auth_basic_user_file /home/{{ instance_name }}/www/{{ instance_env }}/.htpasswd;
+    {% endif %}
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico) {
         expires 180d;

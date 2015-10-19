@@ -61,6 +61,15 @@
     - htdocs
     - logs
 
+- name: Check if .htpasswd exist
+  stat: path="/home/{{ instance_name }}/www/{{ instance_env }}/.htpasswd"
+  register: htpasswd
+  when: basic_auth_create
+
+- name: Create .htpasswd file
+  htpasswd: path="/home/{{ instance_name }}/www/{{ instance_env }}/.htpasswd" name={{ instance_name }} password="{{ basic_auth_password }}" owner=root group=www-data mode=0660
+  when: basic_auth_create and not htpasswd.stat.exists
+
 - name: Create nginx virtual host
   template: src=nginx_vhost dest="/etc/nginx/sites-available/{{ instance_name }}_{{ instance_env }}"
 
