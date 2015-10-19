@@ -17,6 +17,7 @@
     - swap
     - ntp
     - nginx
+    - ssl
     - php-fpm
     - mysql
     - drush

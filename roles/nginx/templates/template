@@ -1,8 +1,12 @@
 server {
-    listen       80;
-    server_name  {{ server_name }};
-    root         /home/{{ sudo_user_name }}/www/prod/htdocs;
-    index        index.php index.html;
+    listen 80;
+    listen 443 ssl;
+    server_name {{ server_name }};
+    root /home/{{ sudo_user_name }}/www/prod/htdocs;
+    index index.php index.html;
+
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico) {
         expires 180d;

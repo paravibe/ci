@@ -1,8 +1,12 @@
 server {
-    listen       80;
+    listen 80;
+    listen 443 ssl;
     server_name  {{ instance_name }}.{{ instance_env }}.{{ instance_domain }};
-    root         /home/{{ instance_name }}/www/{{ instance_env }}/htdocs/{% if www_relative_dir is defined and www_relative_dir != false %}{{ www_relative_dir }}{% endif %};
-    index        index.php;
+    root /home/{{ instance_name }}/www/{{ instance_env }}/htdocs/{% if www_relative_dir is defined and www_relative_dir != false %}{{ www_relative_dir }}{% endif %};
+    index index.php;
+
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico) {
         expires 180d;

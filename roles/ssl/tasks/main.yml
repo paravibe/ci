@@ -1,0 +1,9 @@
+---
+ - name: Ensure OpenSSL is installed
+   apt: name=openssl state=present
+
+ - name: Ensure SSL folder exist
+   file: path={{ ssl_storage_path }} state=directory mode=700
+
+ - name: Generate SSL certificate
+   command: openssl req -x509 -nodes -days {{ ssl_certs_days }} -newkey rsa:2048 -subj "/C={{ ssl_certs_country }}/ST={{ ssl_certs_state }}/L={{ ssl_certs_locality }}/O={{ ssl_certs_organization }}/CN={{ ssl_certs_common_name }}" -keyout {{ ssl_storage_path }}/nginx.key -out {{ ssl_storage_path }}/nginx.crt
