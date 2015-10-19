@@ -72,6 +72,8 @@
 
 - name: Create nginx virtual host
   template: src=nginx_vhost dest="/etc/nginx/sites-available/{{ instance_name }}_{{ instance_env }}"
+  notify:
+    - restart nginx
 
 - name: Enable vhost
   file: >

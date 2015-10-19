@@ -1,7 +1,7 @@
 server {
     listen 80;
     listen 443 ssl;
-    server_name  {{ instance_name }}.{{ instance_env }}.{{ instance_domain }};
+    server_name {{ instance_name }}.{{ instance_env }}.{{ instance_domain }} www.{{ instance_name }}.{{ instance_env }}.{{ instance_domain }};
     root /home/{{ instance_name }}/www/{{ instance_env }}/htdocs/{% if www_relative_dir is defined and www_relative_dir != false %}{{ www_relative_dir }}{% endif %};
     index index.php;
 
@@ -13,8 +13,51 @@ server {
     auth_basic_user_file /home/{{ instance_name }}/www/{{ instance_env }}/.htpasswd;
     {% endif %}
 
+    access_log /home/{{ instance_name }}/www/{{ instance_env }}/logs/nginx_access.log;
+    error_log /home/{{ instance_name }}/www/{{ instance_env }}/logs/nginx_error.log;
+
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+
+    location ~ \..*/.*\.php$ {
+        return 403;
+    }
+
+    location ~ ^/sites/.*/private/ {
+        return 403;
+    }
+
+    # Block access to "hidden" files and directories whose names begin with a
+    # period. This includes directories used by version control systems such
+    # as Subversion or Git to store control files.
+    location ~ (^|/)\. {
+        return 403;
+    }
+
+    location / {
+        try_files $uri /index.php?$query_string;
+    }
+
+    location @rewrite {
+        rewrite ^/(.*)$ /index.php?q=$1;
+    }
+
+    # Fighting with Styles? This little gem is amazing.
+    location ~ ^/sites/.*/files/styles/ {
+        try_files $uri @rewrite;
+    }
+
     location ~* \.(js|css|png|jpg|jpeg|gif|ico) {
-        expires 180d;
+        expires max;
         add_header Pragma public;
         add_header Cache-Control "public";
         log_not_found off;

@@ -1,15 +1,61 @@
 server {
     listen 80;
     listen 443 ssl;
-    server_name {{ server_name }};
-    root /home/{{ sudo_user_name }}/www/prod/htdocs;
-    index index.php index.html;
+    server_name {{ server_name }} www.{{ server_name }};
+    root /var/www;
+    index index.php;
 
     ssl_certificate /etc/nginx/ssl/nginx.crt;
     ssl_certificate_key /etc/nginx/ssl/nginx.key;
 
+    auth_basic "Restricted";
+    auth_basic_user_file /var/www/.htpasswd;
+
+    access_log /var/logs/nginx_access.log;
+    error_log /var/logs/nginx_error.log;
+
+
+    location = /favicon.ico {
+        log_not_found off;
+        access_log off;
+    }
+
+    location = /robots.txt {
+        allow all;
+        log_not_found off;
+        access_log off;
+    }
+
+    location ~ \..*/.*\.php$ {
+        return 403;
+    }
+
+    location ~ ^/sites/.*/private/ {
+        return 403;
+    }
+
+    # Block access to "hidden" files and directories whose names begin with a
+    # period. This includes directories used by version control systems such
+    # as Subversion or Git to store control files.
+    location ~ (^|/)\. {
+        return 403;
+    }
+
+    location / {
+        try_files $uri /index.php?$query_string;
+    }
+
+    location @rewrite {
+        rewrite ^/(.*)$ /index.php?q=$1;
+    }
+
+    # Fighting with Styles? This little gem is amazing.
+    location ~ ^/sites/.*/files/styles/ {
+        try_files $uri @rewrite;
+    }
+
     location ~* \.(js|css|png|jpg|jpeg|gif|ico) {
-        expires 180d;
+        expires max;
         add_header Pragma public;
         add_header Cache-Control "public";
         log_not_found off;

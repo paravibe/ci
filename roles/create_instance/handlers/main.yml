@@ -5,7 +5,10 @@
 - name: print ssh key
   debug: msg="User SSH key - {{ user_ssh_key.stdout }}"
 
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
+
 - name: send email
   shell: >
-    echo "Password: {{ user_pass.stdout }}\r\nSSH key: {{ user_ssh_key.stdout }}" | mail -s "Instance {{ instance_name }} {{ instance_env | upper }} has been created" {{ notify_email }}
+    echo "Password: {{ user_pass.stdout }}\r\nSSH key: {{ user_ssh_key.stdout }}" | mail -s "Instance {{ instance_name }} {{ instance_env | upper }} has been created - http://{{ instance_name }}.{{ instance_env }}.{{ instance_domain }}" {{ notify_email }}
   when: notify_email is defined
