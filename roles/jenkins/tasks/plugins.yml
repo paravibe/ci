@@ -1,0 +1,26 @@
+---
+- name: Wait for Jenkins to start up before proceeding
+  shell: "curl -D - --silent http://{{ jenkins_hostname }}:{{ jenkins_port }}/cli/"
+  register: result
+  until: (result.stdout.find("200 OK") != -1) and (result.stdout.find("Please wait while") == -1)
+  retries: "{{ jenkins_connection_retries }}"
+  delay: "{{ jenkins_connection_delay }}"
+  changed_when: false
+
+- name: Create Jenkins CLI destination directory
+  sudo: yes
+  action: file path={{ jenkins_dest }} state=directory
+
+- name: Get the jenkins-cli jarfile from the Jenkins server
+  get_url: url="http://{{ jenkins_hostname }}:{{ jenkins_port }}/jnlpJars/jenkins-cli.jar" dest="{{ jenkins_jar_location }}" mode=0440
+  register: jarfile_get
+  until: "'OK' in jarfile_get.msg or 'file already exists' in jarfile_get.msg"
+  retries: 5
+  delay: 5
+
+- name: Install/update plugins
+  sudo: yes
+  shell: java -jar {{ jenkins_jar_location }} -s http://{{ jenkins_hostname }}:{{ jenkins_port }} install-plugin {{ item }}
+  with_items: plugins
+  notify:
+    - restart jenkins

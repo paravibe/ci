@@ -1,0 +1,23 @@
+---
+- name: Add Jenkins apt-key
+  sudo: yes
+  action: apt_key url={{ jenkins_repo_key }} state=present
+
+- name: Add Jenkins repository
+  apt_repository: repo='{{ jenkins_repo_url }}' state=present update_cache=yes
+
+- name: Install Jenkins
+  apt: name=jenkins state=present
+  notify:
+    - restart jenkins
+
+- name: Copy nginx vhost
+  template: src=nginx_vhost dest=/etc/nginx/sites-available/jenkins
+
+- name: Enable vhost
+  file: >
+    src=/etc/nginx/sites-available/jenkins
+    dest=/etc/nginx/sites-enabled/jenkins
+    state=link
+
+- include: plugins.yml

@@ -1,0 +1,4 @@
+---
+jenkins_repo_url: deb http://pkg.jenkins-ci.org/debian binary/
+jenkins_repo_key: http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key
+jenkins_port: 8080
