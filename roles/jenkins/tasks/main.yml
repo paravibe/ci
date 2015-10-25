@@ -11,6 +11,12 @@
   notify:
     - restart jenkins
 
+- name: Change Jenkins port
+  replace: dest=/etc/default/jenkins regexp="^(HTTP_PORT=8080)$" replace="HTTP_PORT={{ jenkins_port }}"
+
+- name: Restart Jenkins
+  service: name=jenkins state=restarted enabled=yes
+
 - name: Copy nginx vhost
   template: src=nginx_vhost dest=/etc/nginx/sites-available/jenkins
 
