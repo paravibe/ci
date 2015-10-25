@@ -1,0 +1,30 @@
+---
+- name: Install GitLab dependencies.
+  apt: "name={{ item }} state=installed"
+  with_items:
+    - openssh-server
+    - curl
+
+- name: Add the GitLab package server
+  shell: curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | sudo bash
+
+- name: Install GitLab
+  apt: name=gitlab-ce state=present update_cache=yes
+
+- name: Configure and start GitLab
+  command: gitlab-ctl reconfigure
+  failed_when: false
+
+- name: Copy nginx vhost
+  template: src=nginx_vhost dest=/etc/nginx/sites-available/gitlab
+
+- name: Enable vhost
+  file: >
+    src=/etc/nginx/sites-available/gitlab
+    dest=/etc/nginx/sites-enabled/gitlab
+    state=link
+
+- name: Copy GitLab configuration
+  template: src=gitlab.rb dest=/etc/gitlab/gitlab.rb
+  notify:
+    - restart gitlab
