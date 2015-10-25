@@ -1,6 +1,9 @@
 ---
+- name: Add stable nginx repository
+  apt_repository: repo='ppa:nginx/stable'
+
 - name: Install nginx
-  apt: name=nginx state=present
+  apt: name=nginx state=present update_cache=yes
 
 - name: Copy nginx configuration template
   template: src=template dest=/etc/nginx/sites-available/template
