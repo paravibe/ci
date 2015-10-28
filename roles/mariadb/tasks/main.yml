@@ -1,22 +1,18 @@
 ---
-- name: Install MySQL
-  apt: name=mysql-server state=present
-  register: install_mysql
+- name: Install MariaDB
+  apt: name=mariadb-server state=present
+  register: install_mariadb
 
 - name: Install MySQLdb Python
   apt: name=python-mysqldb state=present
 
-- name: Configure MySQL
-  command: mysql_install_db
-  sudo: true
-
-- name: Delete anonymous MySQL server user
+- name: Delete anonymous MariaDB server user
   mysql_user: name='' host=localhost state=absent
-  when: install_mysql.changed
+  when: install_mariadb.changed
 
-- name: Remove the MySQL test database
+- name: Remove the MariaDB test database
   mysql_db: name=test state=absent
-  when: install_mysql.changed
+  when: install_mariadb.changed
 
 - name: Change root user password
   mysql_user: login_user=root
@@ -30,12 +26,12 @@
     - 127.0.0.1
     - ::1
     - localhost
-  when: install_mysql.changed
+  when: install_mariadb.changed
 
-- name: Create MySQL configuration file
+- name: Create MariaDB configuration file
   template: src=my.cnf dest=/etc/mysql/conf.d/override.cnf owner=root mode=0600
   notify: 
   - restart mysql
 
-- name: Start Mysql Service
+- name: Start MariaDB Service
   service: name=mysql state=started
