@@ -3,7 +3,7 @@
 ## Url on which GitLab will be reachable.
 ## For more details on configuring external_url see:
 ## https://gitlab.com/gitlab-org/omnibus-gitlab/blob/629def0a7a26e7c2326566f0758d4a27857b52a3/README.md#configuring-the-external-url-for-gitlab
-external_url "http://localhost:8082"
+external_url "http://{{ gitlab_web_url }}"
 
 
 ## Note: configuration settings below are optional.
@@ -305,7 +305,7 @@ external_url "http://localhost:8082"
 
 ## Advanced settings
 # unicorn['listen'] = '127.0.0.1'
-# unicorn['port'] = 8080
+unicorn['port'] = {{ gitlab_unicorn_port }}
 # unicorn['socket'] = '/var/opt/gitlab/gitlab-rails/sockets/gitlab.socket'
 # unicorn['pidfile'] = '/opt/gitlab/var/unicorn/unicorn.pid'
 # unicorn['tcp_nopush'] = true
@@ -396,7 +396,7 @@ external_url "http://localhost:8082"
 ## see: https://gitlab.com/gitlab-org/omnibus-gitlab/tree/629def0a7a26e7c2326566f0758d4a27857b52a3/doc/settings/nginx.md#using-a-non-bundled-web-server
 ## When bundled nginx is disabled we need to add the external webserver user to the GitLab webserver group.
 
-# web_server['external_users'] = []
+web_server['external_users'] = ['www-data']
 # web_server['username'] = 'gitlab-www'
 # web_server['group'] = 'gitlab-www'
 # web_server['uid'] = nil
@@ -626,7 +626,7 @@ external_url "http://localhost:8082"
 ## see https://gitlab.com/gitlab-org/omnibus-gitlab/tree/629def0a7a26e7c2326566f0758d4a27857b52a3/doc/settings/nginx.md
 ## You can tell the bundled NGINX that it should not serve up GitLab CI by setting ci_nginx['enable'] to false.
 
-# ci_nginx['enable'] = false
+ci_nginx['enable'] = false
 # ci_nginx['client_max_body_size'] = '250m'
 # ci_nginx['redirect_http_to_https'] = false
 # ci_nginx['redirect_http_to_https_port'] = 80
