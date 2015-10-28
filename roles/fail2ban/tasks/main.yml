@@ -1,0 +1,7 @@
+---
+- name: Intsall fail2ban
+  apt: name=fail2ban state=present
+
+- name: Copy fail2ban configuration
+  template: src=jail.conf dest=/etc/fail2ban/jail.local
+  notify: restart fail2ban
