@@ -3,7 +3,7 @@
 instance_name: CHANGE_ME
 
 # Environment name. E.g. qa or stage.
-instance_env: qa
+instance_env: CHANGE_ME
 
 # Domain name.
 instance_domain: CHANGE_ME
@@ -22,4 +22,4 @@ notify_email: CHANGE_ME
 
 # Basic authentification password.
 basic_auth_create: true
-basic_auth_password: "{{ instance_name }}2015"
+basic_auth_password: "CHANGE_ME"
