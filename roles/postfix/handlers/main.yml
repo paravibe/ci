@@ -8,5 +8,5 @@
 
 - name: send test email
   shell: >
-    echo "This is a test message from {{ ansible_hostname }} at $(date -R)" | mail -s "Test Postfix" {{ postfix_notify_email }}
+    echo "Droplet {{ ansible_hostname }} {{ ansible_distribution }} {{ ansible_distribution_version }} has been updated at $(date -R). IP: {{ ansible_default_ipv4.address }}" | mail -s "Droplet Updated" {{ postfix_notify_email }}
   when: postfix_notify_email is defined
