@@ -6,7 +6,7 @@
   git: repo=https://github.com/robbyrussell/oh-my-zsh.git dest=/usr/local/src/.oh-my-zsh
 
 - name: Copy .zshrc
-  template: src=.zshrc dest=~/
+  template: src=zshrc.j2 dest=~/.zshrc
 
 - name: Set zsh as default shell
   user: name=root shell=/bin/zsh

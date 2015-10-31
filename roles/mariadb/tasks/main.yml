@@ -29,7 +29,7 @@
   when: install_mariadb.changed
 
 - name: Create MariaDB configuration file
-  template: src=my.cnf dest=/etc/mysql/conf.d/override.cnf owner=root mode=0600
+  template: src=my.cnf.j2 dest=/etc/mysql/conf.d/override.cnf owner=root mode=0600
   notify: 
   - restart mysql
 

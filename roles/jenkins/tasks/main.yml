@@ -18,7 +18,7 @@
   service: name=jenkins state=restarted enabled=yes
 
 - name: Copy nginx vhost
-  template: src=nginx_vhost dest=/etc/nginx/sites-available/jenkins
+  template: src=nginx_vhost.j2 dest=/etc/nginx/sites-available/jenkins
 
 - name: Enable vhost
   file: >

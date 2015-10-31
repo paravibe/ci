@@ -29,7 +29,7 @@
   when: user_create.changed
 
 - name: Copy .zshrc
-  template: src=.zshrc dest="/home/{{ instance_name }}/.zshrc"
+  template: src=zshrc.j2 dest="/home/{{ instance_name }}/.zshrc"
   when: user_create.changed
 
 - name: Get user SSH key
@@ -71,7 +71,7 @@
   when: basic_auth_create and not htpasswd.stat.exists
 
 - name: Create nginx virtual host
-  template: src=nginx_vhost dest="/etc/nginx/sites-available/{{ instance_name }}_{{ instance_env }}"
+  template: src=nginx_vhost.j2 dest="/etc/nginx/sites-available/{{ instance_name }}_{{ instance_env }}"
   notify:
     - restart nginx
 

@@ -16,7 +16,7 @@
   failed_when: false
 
 - name: Copy nginx vhost
-  template: src=nginx_vhost dest=/etc/nginx/sites-available/gitlab
+  template: src=nginx_vhost.j2 dest=/etc/nginx/sites-available/gitlab
 
 - name: Enable vhost
   file: >
@@ -25,6 +25,6 @@
     state=link
 
 - name: Copy GitLab configuration
-  template: src=gitlab.rb dest=/etc/gitlab/gitlab.rb
+  template: src=gitlab.rb.j2 dest=/etc/gitlab/gitlab.rb
   notify:
     - restart gitlab

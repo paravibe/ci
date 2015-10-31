@@ -9,13 +9,13 @@
     - libsasl2-modules
 
 - name: Copy postfix configuration
-  template: src=main.cf dest=/etc/postfix/main.cf
+  template: src=main.cf.j2 dest=/etc/postfix/main.cf
   notify:
     - restart postfix
     - send test email
 
 - name: Copy SMTP authentication
-  template: src=sasl_passwd dest=/etc/postfix/sasl/sasl_passwd mode=0400 owner=root group=root
+  template: src=sasl_passwd.j2 dest=/etc/postfix/sasl/sasl_passwd mode=0400 owner=root group=root
   notify:
     - postmap sasl
 
