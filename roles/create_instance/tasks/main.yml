@@ -3,11 +3,15 @@
   shell: echo "{{ password_salt }}_$(date +%s)" | sha256sum | base64 | head -c 16; echo
   register: user_pass
 
+- name: Generate password hash
+  shell: python -c 'import crypt; print crypt.crypt("{{ user_pass.stdout }}", "$1$afRgT$")'
+  register: user_pass_hash
+
 - name: Create new user
   user: >
     name={{ instance_name }}
     comment={{ instance_name | capitalize }}
-    password={{ user_pass.stdout }}
+    password={{ user_pass_hash.stdout }}
     generate_ssh_key=yes
     ssh_key_comment="{{ instance_name }}@{{ ansible_hostname }}"
     update_password=on_create
