@@ -25,5 +25,52 @@
     src=/etc/nginx/sites-available/jenkins
     dest=/etc/nginx/sites-enabled/jenkins
     state=link
+  notify:
+    - restart nginx
+
+- name: Get Jenkins home directory
+  shell: "awk -F: -v v='jenkins' '{if ($1==v) print $6}' /etc/passwd"
+  register: jenkins_home
+
+- name: Generate password hash
+  shell: echo -n "{{ jenkins_user_pass }}{"{{jenkins_pass_salt }}"}" | sha256sum | head -c 64; echo
+  register: jenkins_pass_hash
 
 - include: plugins.yml
+
+- name: Get Jenkins updates
+  sudo: yes
+  action: get_url url=http://updates.jenkins-ci.org/update-center.json dest={{ jenkins_updates_file }} thirsty=yes mode=0440
+  register: jenkins_updates
+
+- name: Update-center Jenkins
+  sudo: yes
+  action: "shell cat {{ jenkins_updates_file }} | sed '1d;$d' | curl -X POST -H 'Accept: application/json' -d @- http://{{ jenkins_hostname }}:{{ jenkins_port }}/updateCenter/byId/default/postBack"
+  when: jenkins_updates.changed
+  notify:
+    - restart jenkins
+
+- name: Create user directory
+  file: >
+    path="{{ jenkins_home.stdout }}/users/{{ jenkins_user_name }}"
+    owner=jenkins
+    group=jenkins
+    state=directory
+
+- name: Copy user config
+  template: >
+    src=configs/users/config.xml.j2
+    dest={{ jenkins_home.stdout }}/users/{{ jenkins_user_name }}/config.xml
+    owner=jenkins
+    group=jenkins
+  notify:
+    - restart jenkins
+
+- name: Copy global configuration
+  template: >
+    src=configs/config.xml.j2
+    dest={{ jenkins_home.stdout }}/config.xml
+    owner=jenkins
+    group=jenkins
+  notify:
+    - restart jenkins
