@@ -7,7 +7,7 @@ sudo_user_pass: CHANGE_ME
 sudo_user_comment: "CHANGE_ME"
 
 # Timezone.
-timezone: "Europe/Kiev"
+timezone: "CHANGE_ME"
 
 # Domain.
 server_name: "{{ ansible_hostname }}"
@@ -32,11 +32,15 @@ ssl_certs_locality: "CHANGE_ME"
 ssl_certs_organization: "CHANGE_ME"
 ssl_certs_state: "CHANGE_ME"
 ssl_certs_common_name: "{{ ansible_fqdn }}"
-ssl_certs_days: "365"
+ssl_certs_days: "1825"
 ssl_storage_path: "/etc/nginx/ssl"
 
 # Jenkins.
 jenkins_web_url: CHANGE_ME
+jenkins_user_name: CHANGE_ME
+jenkins_user_pass: CHANGE_ME
+jenkins_user_mail: CHANGE_ME
+jenkins_pass_salt: CHANGE_ME
 
 # GitLab.
 gitlab_web_url: CHANGE_ME
