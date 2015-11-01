@@ -23,6 +23,8 @@
     src=/etc/nginx/sites-available/gitlab
     dest=/etc/nginx/sites-enabled/gitlab
     state=link
+  notify:
+    - restart nginx
 
 - name: Copy GitLab configuration
   template: src=gitlab.rb.j2 dest=/etc/gitlab/gitlab.rb
