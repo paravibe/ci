@@ -21,4 +21,5 @@ plugins:
   - 'ssh-agent'
   - 'git'
   - 'ansible'
+  - 'ansicolor'
   - 'gitlab-merge-request-jenkins'

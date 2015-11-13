@@ -4,3 +4,6 @@
 
 - name: restart nginx
   service: name=nginx state=restarted enabled=yes
+
+- name: print jenkins key
+  debug: msg="JENKINS SSH - {{ jenkins_ssh_key.stdout }}"

@@ -17,6 +17,13 @@
 - name: Restart Jenkins
   service: name=jenkins state=restarted enabled=yes
 
+- name: Generate ssh key
+  user: >
+    name=jenkins
+    generate_ssh_key=yes
+    ssh_key_comment="jenkins@{{ ansible_hostname }}"
+  register: jenkins_ssh_key
+
 - name: Copy nginx vhost
   template: src=nginx_vhost.j2 dest=/etc/nginx/sites-available/jenkins
 
@@ -70,6 +77,58 @@
   template: >
     src=configs/config.xml.j2
     dest={{ jenkins_home.stdout }}/config.xml
+    owner=jenkins
+    group=jenkins
+  notify:
+    - restart jenkins
+
+- name: Create TEMPLATE_MR job directory
+  file: >
+    path="{{ jenkins_home.stdout }}/jobs/TEMPLATE_MR"
+    owner=jenkins
+    group=jenkins
+    state=directory
+
+- name: Create TEMPLATE_MR job
+  template: >
+    src=configs/jobs/template/config.xml.j2
+    dest={{ jenkins_home.stdout }}/jobs/TEMPLATE_MR/config.xml
+    owner=jenkins
+    group=jenkins
+  notify:
+    - restart jenkins
+
+- name: Create credentials.xml
+  template: >
+    src=configs/credentials.xml.j2
+    dest={{ jenkins_home.stdout }}/credentials.xml
+    owner=jenkins
+    group=jenkins
+  notify:
+    - restart jenkins
+
+- name: Create org.jenkinsci.plugins.gitlab.GitlabBuildTrigger.xml
+  template: >
+    src=configs/GitlabBuildTrigger.xml.j2
+    dest={{ jenkins_home.stdout }}/org.jenkinsci.plugins.gitlab.GitlabBuildTrigger.xml
+    owner=jenkins
+    group=jenkins
+  notify:
+    - restart jenkins
+
+- name: Create hudson.plugins.git.GitSCM.xml
+  template: >
+    src=configs/GitSCM.xml.j2
+    dest={{ jenkins_home.stdout }}/hudson.plugins.git.GitSCM.xml
+    owner=jenkins
+    group=jenkins
+  notify:
+    - restart jenkins
+
+- name: Create jenkins.model.JenkinsLocationConfiguration.xml
+  template: >
+    src=configs/JenkinsLocationConfiguration.xml.j2
+    dest={{ jenkins_home.stdout }}/jenkins.model.JenkinsLocationConfiguration.xml
     owner=jenkins
     group=jenkins
   notify:

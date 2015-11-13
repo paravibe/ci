@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<org.jenkinsci.plugins.gitlab.GitlabBuildTrigger_-GitlabBuildTriggerDescriptor plugin="gitlab-merge-request-jenkins@1.2.4">
+  <__botUsername>jenkins</__botUsername>
+  <__gitlabHostUrl>http://{{ gitlab_web_url }}</__gitlabHostUrl>
+  <__assigneeFilter></__assigneeFilter>
+  <__botApiTokenSecret>CHANGE_ME</__botApiTokenSecret>
+  <__cron>H/2 * * * *</__cron>
+  <__enableBuildTriggeredMessage>true</__enableBuildTriggeredMessage>
+  <__successMessage>Tests PASSED.</__successMessage>
+  <__unstableMessage>Tests FAILED.</__unstableMessage>
+  <__failureMessage>Tests FAILED.</__failureMessage>
+  <__ignoreCertificateErrors>false</__ignoreCertificateErrors>
+  <__jobs>
+    <entry>
+      <string>TEMPLATE_MR</string>
+      <map/>
+    </entry>
+  </__jobs>
+</org.jenkinsci.plugins.gitlab.GitlabBuildTrigger_-GitlabBuildTriggerDescriptor>

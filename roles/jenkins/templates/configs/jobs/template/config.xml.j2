@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>origin</name>
+        <url>git@{{ gitlab_web_url }}:CHANGE_ME/CHANGE_ME.git</url>
+        <credentialsId>afd8fdb5-8d30-44bf-bfef-6a1bce618220</credentialsId>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>refs/remotes/origin/${gitlabSourceBranch}</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.PreBuildMerge>
+        <options>
+          <mergeRemote>origin</mergeRemote>
+          <mergeTarget>${gitlabTargetBranch}</mergeTarget>
+          <mergeStrategy>default</mergeStrategy>
+          <fastForwardMode>NO_FF</fastForwardMode>
+        </options>
+      </hudson.plugins.git.extensions.impl.PreBuildMerge>
+    </extensions>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers>
+    <org.jenkinsci.plugins.gitlab.GitlabBuildTrigger plugin="gitlab-merge-request-jenkins@1.2.4">
+      <spec>H/2 * * * *</spec>
+      <__cron>H/2 * * * *</__cron>
+      <__projectPath>CHANGE_ME/CHANGE_ME</__projectPath>
+      <__targetBranchRegex></__targetBranchRegex>
+      <__useHttpUrl>false</__useHttpUrl>
+      <__assigneeFilter></__assigneeFilter>
+      <__triggerComment>RETEST</__triggerComment>
+      <__autoCloseFailed>false</__autoCloseFailed>
+      <__autoMergePassed>false</__autoMergePassed>
+    </org.jenkinsci.plugins.gitlab.GitlabBuildTrigger>
+  </triggers>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>echo &quot;Hello!&quot;</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
