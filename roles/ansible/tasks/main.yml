@@ -1,4 +1,7 @@
 ---
+- name: Install software-properties-common
+  apt: name=software-properties-common state=present
+
 - name: Add stable nginx repository
   apt_repository: repo='ppa:ansible/ansible'
 
