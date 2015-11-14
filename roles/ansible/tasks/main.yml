@@ -1,0 +1,6 @@
+---
+- name: Add stable nginx repository
+  apt_repository: repo='ppa:ansible/ansible'
+
+- name: Install Ansible
+  apt: name=ansible state=present update_cache=yes
