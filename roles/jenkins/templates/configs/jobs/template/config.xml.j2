@@ -51,9 +51,15 @@
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
-      <command>echo &quot;Hello!&quot;</command>
+      <command>export PYTHONUNBUFFERED=1
+touch ${WORKSPACE}/BUILDINFO.md
+ansible-playbook .devops/sniffers.yml -i &apos;localhost,&apos; --connection=local --extra-vars &quot;workspace_dir=${WORKSPACE}</command>
     </hudson.tasks.Shell>
   </builders>
   <publishers/>
-  <buildWrappers/>
+  <buildWrappers>
+    <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.4.2">
+      <colorMapName>xterm</colorMapName>
+    </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+  </buildWrappers>
 </project>

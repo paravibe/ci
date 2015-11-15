@@ -17,12 +17,17 @@
 - name: Restart Jenkins
   service: name=jenkins state=restarted enabled=yes
 
+- name: Add jenkins user to nopasswd sudoers
+  lineinfile: dest=/etc/sudoers line="jenkins ALL=(ALL) NOPASSWD:ALL"
+
 - name: Generate ssh key
   user: >
     name=jenkins
     generate_ssh_key=yes
     ssh_key_comment="jenkins@{{ ansible_hostname }}"
   register: jenkins_ssh_key
+  notify:
+    - print jenkins key
 
 - name: Copy nginx vhost
   template: src=nginx_vhost.j2 dest=/etc/nginx/sites-available/jenkins
