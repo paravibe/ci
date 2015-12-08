@@ -25,7 +25,16 @@
     name=jenkins
     generate_ssh_key=yes
     ssh_key_comment="jenkins@{{ ansible_hostname }}"
+  register: jenkins_ssh
+
+- name: Get Jenkins home directory
+  shell: "awk -F: -v v='jenkins' '{if ($1==v) print $6}' /etc/passwd"
+  register: jenkins_home
+
+- name: Get jenkins SSH key
+  shell: cat "{{ jenkins_home.stdout }}/.ssh/id_rsa.pub"
   register: jenkins_ssh_key
+  when: jenkins_ssh.changed
   notify:
     - print jenkins key
 
@@ -39,10 +48,6 @@
     state=link
   notify:
     - restart nginx
-
-- name: Get Jenkins home directory
-  shell: "awk -F: -v v='jenkins' '{if ($1==v) print $6}' /etc/passwd"
-  register: jenkins_home
 
 - name: Generate password hash
   shell: echo -n "{{ jenkins_user_pass }}{"{{jenkins_pass_salt }}"}" | sha256sum | head -c 64; echo
