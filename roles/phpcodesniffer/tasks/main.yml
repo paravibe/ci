@@ -1,0 +1,18 @@
+---
+- name: Prepare directory
+  file: path=/usr/local/src/code_sniffer state=directory mode=0755
+
+- name: Run composer install
+  composer:
+    command: require
+    arguments: "drupal/coder"
+    working_dir: "/usr/local/src/code_sniffer"
+
+- name: Create symlink for sniffer
+  file: src=/usr/local/src/code_sniffer/vendor/bin/{{ item.name }} dest=/usr/bin/{{ item.name }} state=link force=yes
+  with_items:
+    - { name: 'phpcs' }
+    - { name: 'phpcbf' }
+
+- name: Register Drupal standards
+  shell: phpcs --config-set installed_paths /usr/local/src/code_sniffer/vendor/drupal/coder/coder_sniffer
