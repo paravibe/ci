@@ -17,8 +17,10 @@
     - nginx
     - ssl
     - php-fpm
+    - hhvm
     - mariadb
     - drush
+    - phpcodesniffer
     - nodejs
     - postfix
     - jenkins
