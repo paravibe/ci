@@ -23,3 +23,6 @@ notify_email: CHANGE_ME
 # Basic authentification password.
 basic_auth_create: true
 basic_auth_password: "CHANGE_ME"
+
+instance_ssl: false
+instance_hhvm: true
