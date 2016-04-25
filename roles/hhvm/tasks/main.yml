@@ -1,0 +1,48 @@
+---
+- name: Install dependencies
+  apt: name=software-properties-common state=present
+
+- name: Add apt key
+  apt_key: keyserver=hkp://keyserver.ubuntu.com:80 id=0x5a16e7281be7a449
+
+- name: Get release name
+  shell: echo $(lsb_release -sc)
+  register: release
+
+- name: Install HHVM Repository
+  apt_repository: repo='deb http://dl.hhvm.com/ubuntu {{ release.stdout }} main' state=present update_cache=yes
+
+- name: Install HHVM
+  apt: name=hhvm state=present
+
+- name: Stop HHVM
+  service: name=hhvm state=stopped
+
+- name: Check if upstart exists
+  stat: path=/etc/init.d/hhvm
+  register: init_hhvm
+
+- name: Move upstart script
+  shell: mv /etc/init.d/hhvm ~
+  when: init_hhvm.stat.exists == true
+
+- name: Copy new upstart script
+  template: src=init.hhvm.j2 dest=/etc/init/hhvm.conf
+  notify: restart hhvm
+
+- name: Copy HHVM PHP settings
+  template: src=php.ini.j2 dest=/etc/hhvm/php.ini
+  notify: restart hhvm
+
+- name: Copy HHVM server settings
+  template: src=server.ini.j2 dest=/etc/hhvm/server.ini
+  notify: restart hhvm
+
+- name: Copy HHVM config to nginx
+  template: src=hhvm.conf.j2 dest=/etc/nginx/hhvm.conf
+
+- name: Copy PHP fallback config to nginx
+  template: src=php_fpm_fallback.conf.j2 dest=/etc/nginx/php_fpm_fallback.conf
+
+- name: Copy VirtualHost template
+  template: src=virtualhost_hhvm.j2 dest=/etc/nginx/sites-available/template-hhvm

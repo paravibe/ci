@@ -1,21 +1,24 @@
 server {
     listen 80;
+    {% if instance_ssl %}
     listen 443 ssl;
+    {% endif %}
+
     server_name {{ instance_name }}.{{ instance_env }}.{{ instance_domain }} www.{{ instance_name }}.{{ instance_env }}.{{ instance_domain }};
     root /home/{{ instance_name }}/www/{{ instance_env }}/htdocs/{% if www_relative_dir is defined and www_relative_dir != false %}{{ www_relative_dir }}{% endif %};
     index index.php;
-
+    {% if instance_ssl %}
     ssl_certificate /etc/nginx/ssl/nginx.crt;
     ssl_certificate_key /etc/nginx/ssl/nginx.key;
+    {% endif %}
     {% if basic_auth_create %}
 
     auth_basic "Restricted";
     auth_basic_user_file /home/{{ instance_name }}/www/{{ instance_env }}/.htpasswd;
     {% endif %}
 
-    access_log /home/{{ instance_name }}/www/{{ instance_env }}/logs/nginx_access.log;
-    error_log /home/{{ instance_name }}/www/{{ instance_env }}/logs/nginx_error.log;
-
+    access_log /home/{{ instance_name }}/www/{{ instance_env }}/logs/access.log;
+    error_log /home/{{ instance_name }}/www/{{ instance_env }}/logs/error.log;
 
     location = /favicon.ico {
         log_not_found off;
@@ -43,16 +46,19 @@ server {
         return 403;
     }
 
-    location / {
-        try_files $uri /index.php?$query_string;
-    }
-
     location @rewrite {
         rewrite ^/(.*)$ /index.php?q=$1;
     }
 
-    # Fighting with Styles? This little gem is amazing.
     location ~ ^/sites/.*/files/styles/ {
+        try_files $uri @rewrite;
+    }
+
+    location ~ ^/system/files/ {
+        try_files $uri @rewrite;
+    }
+
+    location ~ ^/system/temporary/ {
         try_files $uri @rewrite;
     }
 
@@ -63,11 +69,23 @@ server {
         log_not_found off;
     }
 
-    location ~ \.php$ {
+{% if instance_hhvm %}
+    location / {
+        fastcgi_intercept_errors on;
+        error_page 500 502 = @fallback;
+        try_files $uri /index.php?$query_string;
+        include /etc/nginx/hhvm.conf;
+    }
+
+    include /etc/nginx/php_fpm_fallback.conf;
+    {% else %}
+    location / {
         try_files $uri =404;
         fastcgi_pass unix:/var/run/php5-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
     }
+{% endif %}
+
 }

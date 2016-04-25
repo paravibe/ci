@@ -5,6 +5,25 @@
 - name: Install nginx
   apt: name=nginx state=present update_cache=yes
 
+- name: Add settings
+  replace:
+    dest=/etc/nginx/nginx.conf
+    regexp="# server_tokens off;"
+    replace="server_tokens off;"
+  notify: restart nginx
+
+- name: Add settings
+  lineinfile:
+    dest=/etc/nginx/nginx.conf
+    insertafter="http {"
+    line="	client_max_body_size 1024M;"
+    state=present
+  notify: restart nginx
+
 - name: Copy nginx configuration template
   template: src=template.j2 dest=/etc/nginx/sites-available/template
+  notify: restart nginx
+
+- name: Add default page
+  template: src=index.html.j2 dest=/var/www/html/index.html
   notify: restart nginx

@@ -25,12 +25,15 @@
 - name: Add sudo group
   group: name=sudo state=present
 
-- name: Generate password hash for "{{ sudo_user_pass }}"
+- name: Generate password hash for "{{ sudo_user_name }}"
   shell: python -c 'import crypt; print crypt.crypt("{{ sudo_user_pass }}", "$1$afRgT$")'
   register: sudo_user_pass_hash
 
-- name: Add "{{ sudo_user_pass }}" user
+- name: Add "{{ sudo_user_name }}" user
   user: name="{{ sudo_user_name }}" shell=/bin/zsh comment="{{ sudo_user_comment }}" group=sudo password="{{ sudo_user_pass_hash.stdout }}"
 
-- name: Copy .zshrc for "{{ sudo_user_pass }}" user
+- name: Copy .zshrc for "{{ sudo_user_name }}" user
   command: cp /root/.zshrc "/home/{{ sudo_user_name }}"
+
+- name: Change motd
+  template: src=10-help-text.j2 dest=/etc/update-motd.d/10-help-text
