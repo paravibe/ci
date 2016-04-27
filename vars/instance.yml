@@ -1,4 +1,6 @@
 ---
+instance_user: CHANGE_ME
+
 # Instance name. Use lowercase name.
 instance_name: CHANGE_ME
 
@@ -26,3 +28,10 @@ basic_auth_password: "CHANGE_ME"
 
 instance_ssl: false
 instance_hhvm: true
+
+production_url: "CHANGE_ME"
+add_settings_php_folder: CHANGE_ME
+error_level: 0
+reroute_email_address: CHANGE_ME
+
+authorized_ssh_key: "CHANGE_ME"
