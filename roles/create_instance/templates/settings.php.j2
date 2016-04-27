@@ -1,0 +1,80 @@
+<?php
+
+/**
+ * @file
+ * Drupal site-specific configuration file.
+ */
+
+/**
+ * Database settings:
+ */
+$databases = array (
+  'default' =>
+  array (
+    'default' =>
+    array (
+      'database' => '{{ instance_user }}_{{ instance_name }}',
+      'username' => '{{ instance_user }}',
+      'password' => '{{ user_pass.stdout }}',
+      'host' => 'localhost',
+      'port' => '',
+      'driver' => 'mysql',
+      'prefix' => '',
+    ),
+  ),
+);
+
+/**
+ * Access control for update.php script.
+ */
+$update_free_access = FALSE;
+
+/**
+ * Salt for one-time login links and cancel links, form tokens, etc.
+ */
+$drupal_hash_salt = '{{ '{{ instance_name }}_{{ instance_env }}'|hash('sha256') }}';
+
+/**
+ * Base URL (optional).
+ */
+# $base_url = 'http://www.example.com';  // NO trailing slash!
+
+/**
+ * Some distributions of Linux (most notably Debian) ship their PHP
+ * installations with garbage collection (gc) disabled. Since Drupal depends on
+ * PHP's garbage collection for clearing sessions, ensure that garbage
+ * collection occurs by using the most common settings.
+ */
+ini_set('session.gc_probability', 1);
+ini_set('session.gc_divisor', 100);
+
+/**
+ * Set session lifetime (in seconds), i.e. the time from the user's last visit
+ * to the active session may be deleted by the session garbage collector. When
+ * a session is deleted, authenticated users are logged out, and the contents
+ * of the user's $_SESSION variable is discarded.
+ */
+ini_set('session.gc_maxlifetime', 200000);
+
+/**
+ * Set session cookie lifetime (in seconds), i.e. the time from the session is
+ * created to the cookie expires, i.e. when the browser is expected to discard
+ * the cookie. The value 0 means "until the browser is closed".
+ */
+ini_set('session.cookie_lifetime', 2000000);
+
+/**
+ * Fast 404 pages:
+ */
+$conf['404_fast_paths_exclude'] = '/\/(?:styles)\//';
+$conf['404_fast_paths'] = '/\.(?:txt|png|gif|jpe?g|css|js|ico|swf|flv|cgi|bat|pl|dll|exe|asp)$/i';
+$conf['404_fast_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL "@path" was not found on this server.</p></body></html>';
+
+$conf['error_level'] = {{ error_level }};
+$conf['reroute_email_enable'] = 1;
+$conf['reroute_email_address'] = '{{ reroute_email_address }}';
+$conf['reroute_email_enable_message'] = 1;
+{% if production_url != False %}
+$conf['stage_file_proxy_origin'] = '{{ production_url }}';
+$conf['stage_file_proxy_origin_dir'] = 'sites/{{ add_settings_php_folder }}/files';
+{% endif %}

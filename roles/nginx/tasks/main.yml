@@ -16,7 +16,7 @@
   lineinfile:
     dest=/etc/nginx/nginx.conf
     insertafter="http {"
-    line="	client_max_body_size 1024M;"
+    line="	client_max_body_size {{ nginx_client_max_body_size }};"
     state=present
   notify: restart nginx
 
@@ -26,4 +26,8 @@
 
 - name: Add default page
   template: src=index.html.j2 dest=/var/www/html/index.html
+  notify: restart nginx
+
+- name: Remove default virtual host
+  file: path=/etc/nginx/sites-enabled/default state=absent
   notify: restart nginx

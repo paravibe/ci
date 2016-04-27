@@ -7,3 +7,53 @@
     - php5-mysql
     - php5-gd
     - php5-curl
+
+- name: Change memory limit
+  replace:
+    dest={{ item }}
+    regexp="memory_limit = .+"
+    replace="memory_limit = {{ php_memory_limit }}"
+  notify: restart php5-fpm
+  with_items:
+    - /etc/php5/cli/php.ini
+    - /etc/php5/fpm/php.ini
+
+- name: Change upload max filesize
+  replace:
+    dest={{ item }}
+    regexp="upload_max_filesize = .+"
+    replace="upload_max_filesize = {{ php_upload_max_filesize }}"
+  notify: restart php5-fpm
+  with_items:
+    - /etc/php5/cli/php.ini
+    - /etc/php5/fpm/php.ini
+
+- name: Change max execution time filesize
+  replace:
+    dest={{ item }}
+    regexp="max_execution_time = .+"
+    replace="max_execution_time = {{ php_max_execution_time }}"
+  notify: restart php5-fpm
+  with_items:
+    - /etc/php5/cli/php.ini
+    - /etc/php5/fpm/php.ini
+
+- name: Change max input time filesize
+  replace:
+    dest={{ item }}
+    regexp="max_input_time = .+"
+    replace="max_input_time = {{ php_max_input_time }}"
+  notify: restart php5-fpm
+  with_items:
+    - /etc/php5/cli/php.ini
+    - /etc/php5/fpm/php.ini
+
+- name: Set date timezone
+  replace:
+    dest={{ item }}
+    regexp="(.|)date.timezone =(.+|)"
+    replace="date.timezone = {{ php_date_timezone }}"
+  notify: restart php5-fpm
+  with_items:
+    - /etc/php5/cli/php.ini
+    - /etc/php5/fpm/php.ini

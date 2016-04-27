@@ -9,11 +9,11 @@
 
 - name: Create new user
   user: >
-    name={{ instance_name }}
-    comment={{ instance_name | capitalize }}
+    name={{ instance_user }}
+    comment={{ instance_user | capitalize }}
     password={{ user_pass_hash.stdout }}
     generate_ssh_key=yes
-    ssh_key_comment="{{ instance_name }}@{{ ansible_hostname }}"
+    ssh_key_comment="{{ instance_user }}@{{ ansible_hostname }}"
     update_password=on_create
     state=present
   register: user_create
@@ -28,16 +28,16 @@
   when: user_create.changed
 
 - name: Set zsh shell for user
-  user: name={{ instance_name }} shell=/bin/zsh
+  user: name={{ instance_user }} shell=/bin/zsh
   when: zsh.stat.exists
   when: user_create.changed
 
 - name: Copy .zshrc
-  template: src=zshrc.j2 dest="/home/{{ instance_name }}/.zshrc"
+  template: src=zshrc.j2 dest="/home/{{ instance_user }}/.zshrc"
   when: user_create.changed
 
 - name: Get user SSH key
-  shell: cat "/home/{{ instance_name }}/.ssh/id_rsa.pub"
+  shell: cat "/home/{{ instance_user }}/.ssh/id_rsa.pub"
   register: user_ssh_key
   when: user_create.changed
 
@@ -45,9 +45,9 @@
   mysql_user: >
     login_user=root
     login_password="{{ mysql_root_pass }}"
-    name="{{ instance_name }}"
+    name="{{ instance_user }}"
     password="{{ user_pass.stdout }}"
-    priv="{{ instance_name }}"\_%.*:ALL,GRANT
+    priv="{{ instance_user }}\_%.*:ALL,GRANT"
   notify:
     - print user pass
   when: user_create.changed
@@ -56,31 +56,56 @@
   mysql_db: >
     login_user=root
     login_password="{{ mysql_root_pass }}"
-    name="{{ instance_name }}_{{ instance_env }}"
+    name="{{ instance_user }}_{{ instance_name }}"
     state=present
 
 - name: Create dir structure for user
-  file: path="/home/{{ instance_name }}/www/{{ instance_env }}/{{ item }}" owner="{{ instance_name }}" recurse=yes state=directory
+  file: >
+    path="/home/{{ instance_user }}/www/{{ instance_env }}/{{ item }}"
+    owner="{{ instance_user }}"
+    recurse=yes
+    state=directory
   with_items:
-    - htdocs
+    - resources
     - logs
 
+- name: Create resource dir
+  file: >
+    path="/home/{{ instance_user }}/www/{{ instance_env }}/resources/{{ add_settings_php_folder }}"
+    owner="{{ instance_user }}"
+    state=directory
+  when: add_settings_php_folder != False
+
+- name: Put default settings.php file
+  template: >
+    src=settings.php.j2
+    dest="/home/{{ instance_user }}/www/{{ instance_env }}/resources/{{ add_settings_php_folder }}/settings.php"
+    owner="{{ instance_user }}"
+  when: add_settings_php_folder != False and user_create.changed
+
 - name: Check if .htpasswd exist
-  stat: path="/home/{{ instance_name }}/www/{{ instance_env }}/.htpasswd"
+  stat: path="/home/{{ instance_user }}/www/{{ instance_env }}/.htpasswd"
   register: htpasswd
   when: basic_auth_create
 
 - name: Create .htpasswd file
-  htpasswd: path="/home/{{ instance_name }}/www/{{ instance_env }}/.htpasswd" name={{ instance_name }} password="{{ basic_auth_password }}" owner=root group=www-data mode=0660
+  htpasswd: path="/home/{{ instance_user }}/www/{{ instance_env }}/.htpasswd" name={{ instance_name }} password="{{ basic_auth_password }}" owner=root group=www-data mode=0660
   when: basic_auth_create and not htpasswd.stat.exists
 
 - name: Create nginx virtual host
-  template: src=nginx_vhost.j2 dest="/etc/nginx/sites-available/{{ instance_name }}_{{ instance_env }}"
+  template: src=nginx_vhost.j2 dest="/etc/nginx/sites-available/{{ instance_env }}_{{ instance_name }}"
   notify:
     - restart nginx
 
 - name: Enable vhost
   file: >
-    src="/etc/nginx/sites-available/{{ instance_name }}_{{ instance_env }}" 
-    dest="/etc/nginx/sites-enabled/{{ instance_name }}_{{ instance_env }}"
+    src="/etc/nginx/sites-available/{{ instance_env }}_{{ instance_name }}"
+    dest="/etc/nginx/sites-enabled/{{ instance_env }}_{{ instance_name }}"
     state=link
+
+- name: Add SSH key to authorized
+  lineinfile:
+    dest=/root/.ssh/authorized_keys
+    line="{{ authorized_ssh_key }}"
+    state=present
+  when: authorized_ssh_key
