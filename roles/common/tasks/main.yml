@@ -22,6 +22,9 @@
 - name: Install python-passlib
   apt: name=python-passlib state=present
 
+- name: Install python-passlib
+  apt: name=python-passlib state=present
+
 - name: Add sudo group
   group: name=sudo state=present
 
