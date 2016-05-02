@@ -22,8 +22,8 @@
 - name: Install python-passlib
   apt: name=python-passlib state=present
 
-- name: Install python-passlib
-  apt: name=python-passlib state=present
+- name: Install htop
+  apt: name=htop state=present
 
 - name: Add sudo group
   group: name=sudo state=present
@@ -40,3 +40,47 @@
 
 - name: Change motd
   template: src=10-help-text.j2 dest=/etc/update-motd.d/10-help-text
+
+- name: Generate new password for jenkins
+  shell: echo "$(date +%s)" | sha256sum | base64 | head -c 16; echo
+  register: jenkins_user_pass
+
+- name: Generate password hash
+  shell: python -c 'import crypt; print crypt.crypt("{{ jenkins_user_pass.stdout }}", "$1$afRgT$")'
+  register: jenkins_user_pass_hash
+
+- name: Add jenkins user
+  user: >
+    name="jenkins"
+    shell=/bin/zsh
+    comment="CI"
+    password="{{ jenkins_user_pass_hash.stdout }}"
+    update_password=on_create
+    state=present
+
+- name: Add jenkins user to group shadow
+  user: name=jenkins groups=shadow append=yes
+
+- name: Add jenkins user to nopasswd sudoers
+  lineinfile: dest=/etc/sudoers line="jenkins ALL=(ALL) NOPASSWD:ALL"
+
+- name: Create authorized_keys
+  file: >
+    path="/home/jenkins/.ssh"
+    state=directory
+    owner=jenkins
+    group=jenkins
+
+- name: Create authorized_keys
+  file: >
+    path="/home/jenkins/.ssh/authorized_keys"
+    state=touch
+    owner=jenkins
+    group=jenkins
+
+- name: Add SSH key to authorized
+  lineinfile:
+    dest="/home/jenkins/.ssh/authorized_keys"
+    line="{{ authorized_ssh_key }}"
+    state=present
+  when: authorized_ssh_key
