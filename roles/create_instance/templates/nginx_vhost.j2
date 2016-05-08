@@ -5,7 +5,7 @@ server {
     {% endif %}
 
     server_name {{ instance_name }}.{{ instance_env }}.{{ instance_domain }} www.{{ instance_name }}.{{ instance_env }}.{{ instance_domain }};
-    root /home/{{ instance_name }}/www/{{ instance_env }}/{% if www_relative_dir is defined and www_relative_dir != false %}{{ www_relative_dir }}{% endif %};
+    root /home/{{ instance_user }}/www/{{ instance_env }}/{% if www_relative_dir is defined and www_relative_dir != false %}{{ www_relative_dir }}{% endif %};
     index index.php;
     {% if instance_ssl %}
     ssl_certificate /etc/nginx/ssl/nginx.crt;

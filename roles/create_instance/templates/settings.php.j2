@@ -15,7 +15,7 @@ $databases = array (
     array (
       'database' => '{{ instance_user }}_{{ instance_name }}',
       'username' => '{{ instance_user }}',
-      'password' => '{{ user_pass.stdout }}',
+      'password' => '{{ user_password }}',
       'host' => 'localhost',
       'port' => '',
       'driver' => 'mysql',
@@ -71,10 +71,10 @@ $conf['404_fast_paths'] = '/\.(?:txt|png|gif|jpe?g|css|js|ico|swf|flv|cgi|bat|pl
 $conf['404_fast_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><title>404 Not Found</title></head><body><h1>Not Found</h1><p>The requested URL "@path" was not found on this server.</p></body></html>';
 
 $conf['error_level'] = {{ error_level }};
+{% if production_url != False %}
 $conf['reroute_email_enable'] = 1;
 $conf['reroute_email_address'] = '{{ reroute_email_address }}';
 $conf['reroute_email_enable_message'] = 1;
-{% if production_url != False %}
 $conf['stage_file_proxy_origin'] = '{{ production_url }}';
 $conf['stage_file_proxy_origin_dir'] = 'sites/{{ add_settings_php_folder }}/files';
 {% endif %}

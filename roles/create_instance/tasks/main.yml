@@ -32,6 +32,16 @@
   when: zsh.stat.exists
   when: user_create.changed
 
+- name: Set pass if user exist
+  set_fact:
+    user_password: "{{ instance_user_pass }}"
+  when: not user_create.changed
+
+- name: Set pass if user not exist
+  set_fact:
+    user_password: "{{ user_pass.stdout }}"
+  when: user_create.changed
+
 - name: Copy .zshrc
   template: src=zshrc.j2 dest="/home/{{ instance_user }}/.zshrc"
   when: user_create.changed
@@ -81,7 +91,7 @@
     src=settings.php.j2
     dest="/home/{{ instance_user }}/www/{{ instance_env }}/resources/{{ add_settings_php_folder }}/settings.php"
     owner="{{ instance_user }}"
-  when: add_settings_php_folder != False and user_create.changed
+  when: add_settings_php_folder != False and (user_create.changed or instance_user_pass != False)
 
 - name: Check if .htpasswd exist
   stat: path="/home/{{ instance_user }}/www/{{ instance_env }}/.htpasswd"
