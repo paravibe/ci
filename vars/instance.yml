@@ -1,4 +1,5 @@
 ---
+# User name where site will be. /home/user_name.
 instance_user: CHANGE_ME
 
 # Instance name. Use lowercase name.
@@ -23,15 +24,25 @@ mysql_root_pass: CHANGE_ME
 notify_email: CHANGE_ME
 
 # Basic authentification password.
-basic_auth_create: true
+basic_auth_create: false
 basic_auth_password: "CHANGE_ME"
 
 instance_ssl: false
 instance_hhvm: true
 
-production_url: "CHANGE_ME"
-add_settings_php_folder: CHANGE_ME
-error_level: 0
-reroute_email_address: CHANGE_ME
+# If instance user already exist then specify password.
+# In this case it'll create settings.php file.
+instance_user_pass: false
 
-authorized_ssh_key: "CHANGE_ME"
+# Resources folder name.
+add_settings_php_folder: default
+
+# Production URL is needed for files resources and reroute email. False if prod.
+production_url: "http://e-learning.mentorixpartner.com"
+# If not production this email will be used for rerouting.
+reroute_email_address: CHANGE_ME
+# Error level.
+# 0 - don't show errors
+# 1 - show only warnings
+# 2 - show all errors
+error_level: 0

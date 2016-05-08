@@ -14,13 +14,13 @@ server_name: "{{ ansible_hostname }}"
 
 # Swap file.
 swapfile_location: /swapfile
-swapfile_size: 4G
+swapfile_size: 6G
 
 # MySQL.
 mysql_root_pass: CHANGE_ME
 
 # Postfix.
-postfix_hostname: CHANGE_ME
+postfix_hostname: "{{ ansible_hostname }}"
 postfix_relayhost: '[smtp.gmail.com]:587'
 postfix_email: CHANGE_ME
 postfix_email_pass: CHANGE_ME
@@ -44,3 +44,5 @@ jenkins_pass_salt: CHANGE_ME
 
 # GitLab.
 gitlab_web_url: CHANGE_ME
+
+authorized_ssh_key: ''
