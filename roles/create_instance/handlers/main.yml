@@ -10,5 +10,5 @@
 
 - name: send email
   shell: >
-    echo "Password: {{ user_pass.stdout }}\r\nSSH key: {{ user_ssh_key.stdout }}" | mail -s "Instance {{ instance_name }} {{ instance_env | upper }} has been created - http://{{ instance_name }}.{{ instance_env }}.{{ instance_domain }}" {{ notify_email }}
+    echo "Password: {{ user_pass.stdout }}\r\nSSH key: {{ user_ssh_key.stdout }}" | mail -s "Instance {{ instance_name }} {{ instance_env | upper }} has been created - http://{{ instance_subdomain }}.{{ instance_domain }}" {{ notify_email }}
   when: notify_email is defined

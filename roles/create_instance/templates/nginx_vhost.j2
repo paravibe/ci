@@ -4,7 +4,7 @@ server {
     listen 443 ssl;
     {% endif %}
 
-    server_name {{ instance_name }}.{{ instance_env }}.{{ instance_domain }} www.{{ instance_name }}.{{ instance_env }}.{{ instance_domain }};
+    server_name {{ instance_subdomain }}.{{ instance_domain }} www.{{ instance_subdomain }}.{{ instance_domain }};
     root /home/{{ instance_user }}/www/{{ instance_env }}/{% if www_relative_dir is defined and www_relative_dir != false %}{{ www_relative_dir }}{% endif %};
     index index.php;
     {% if instance_ssl %}

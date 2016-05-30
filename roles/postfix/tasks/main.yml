@@ -19,8 +19,23 @@
   notify:
     - postmap sasl
 
+- name: Check if certificate exists
+  stat: path=/etc/ssl/certs/Thawte_Premium_Server_CA.pem
+  register: thawte_certificate
+
 - name: Validate certificate
   shell: cat /etc/ssl/certs/Thawte_Premium_Server_CA.pem | sudo tee -a /etc/postfix/cacert.pem
+  when: thawte_certificate.stat.exists
+  notify:
+    - restart postfix
+
+- name: Copy certificate
+  template: >
+    src=thawte_Premium_Server_CA.pem.j2
+    dest=/etc/postfix/cacert.pem
+  when: thawte_certificate.stat.exists == False
+  notify:
+    - restart postfix
 
 - name: Start postfix on server boot
   service: name=postfix state=started enabled=yes

@@ -8,11 +8,11 @@
 /**
  * Database settings:
  */
-$databases = array (
+$databases = array(
   'default' =>
-  array (
+  array(
     'default' =>
-    array (
+    array(
       'database' => '{{ instance_user }}_{{ instance_name }}',
       'username' => '{{ instance_user }}',
       'password' => '{{ user_password }}',
@@ -77,4 +77,5 @@ $conf['reroute_email_address'] = '{{ reroute_email_address }}';
 $conf['reroute_email_enable_message'] = 1;
 $conf['stage_file_proxy_origin'] = '{{ production_url }}';
 $conf['stage_file_proxy_origin_dir'] = 'sites/{{ add_settings_php_folder }}/files';
+$conf['googleanalytics_account'] = 'UA-';
 {% endif %}
