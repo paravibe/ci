@@ -7,3 +7,9 @@
 
 - name: Run composer install
   composer: command=install working_dir=/usr/local/src/drush
+
+- name: Prepare drush configuration folder
+  file: path=/etc/drush state=directory
+
+- name: Set drushrc.php
+  template: src=drushrc.php.j2 dest="/etc/drush/drushrc.php"

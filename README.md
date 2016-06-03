@@ -18,7 +18,7 @@ This is a collection of scripts that helps to build CI with GitLab and Jenkins.
 
 - **timezone** - timezone. E.g. "Europe/Kiev"
 
-- **server_name** - This is used for creating nginx virtual host template. In most cases "{{ ansible_hostname }}" wors fine.
+- **server_name** - This is used for creating nginx virtual host template. In most cases "{{ ansible_hostname }}" works fine.
 
 - **swapfile_location** - where to put swap. Default /swapfile.
 - **swapfile_size** - swap size. E.g. 4G.
