@@ -16,13 +16,13 @@
     - ntp
     - fail2ban
     - nginx
-#    - ssl
+    - ssl
     - php-fpm
     - hhvm
     - mariadb
     - drush
-#    - phpcodesniffer
+    - phpcodesniffer
     - nodejs
     - postfix
-#    - jenkins
-#    - gitlab
+    - jenkins
+    - gitlab
