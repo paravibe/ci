@@ -45,4 +45,4 @@ jenkins_pass_salt: CHANGE_ME
 # GitLab.
 gitlab_web_url: CHANGE_ME
 
-authorized_ssh_key: ''
+authorized_ssh_key: "CHANGE_ME"

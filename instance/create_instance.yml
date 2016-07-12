@@ -1,5 +1,6 @@
 ---
-- hosts: droplet
+- hosts: droplets
+  serial: 2
   remote_user: root
 
   vars_files:

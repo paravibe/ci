@@ -10,12 +10,13 @@ instance_env: CHANGE_ME
 
 # Domain name.
 instance_domain: CHANGE_ME
+instance_subdomain: CHANGE_ME
 
 # Additional string that will be used for password generation.
 password_salt: CHANGE_ME
 
 # Relative path for site. Without slashes.
-www_relative_dir: false
+www_relative_dir: CHANGE_ME
 
 # MySQL root password.
 mysql_root_pass: CHANGE_ME
@@ -38,7 +39,7 @@ instance_user_pass: false
 add_settings_php_folder: default
 
 # Production URL is needed for files resources and reroute email. False if prod.
-production_url: "http://e-learning.mentorixpartner.com"
+production_url: "CHANGE_ME"
 # If not production this email will be used for rerouting.
 reroute_email_address: CHANGE_ME
 # Error level.

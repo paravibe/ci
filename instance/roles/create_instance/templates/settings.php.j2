@@ -79,3 +79,8 @@ $conf['stage_file_proxy_origin'] = '{{ production_url }}';
 $conf['stage_file_proxy_origin_dir'] = 'sites/{{ add_settings_php_folder }}/files';
 $conf['googleanalytics_account'] = 'UA-';
 {% endif %}
+{% if production_url != False %}
+$conf['is_production_instance'] = TRUE;
+{% else %}
+$conf['is_production_instance'] = FALSE;
+{% endif %}

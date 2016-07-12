@@ -1,5 +1,6 @@
 ---
-- hosts: droplet
+- hosts: droplets
+  serial: 2
   remote_user: root
 
   vars_files:
@@ -15,13 +16,13 @@
     - ntp
     - fail2ban
     - nginx
-    - ssl
+#    - ssl
     - php-fpm
     - hhvm
     - mariadb
     - drush
-    - phpcodesniffer
+#    - phpcodesniffer
     - nodejs
     - postfix
-    - jenkins
-    - gitlab
+#    - jenkins
+#    - gitlab
