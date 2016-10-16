@@ -1,5 +1,13 @@
 ---
 - hosts: droplets
+  gather_facts: false
+  serial: 2
+  remote_user: root
+  tasks:
+    - name: Install python 2
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+
+- hosts: droplets
   serial: 2
   remote_user: root
 
@@ -10,19 +18,30 @@
     - name: Update aptitude
       apt: update_cache=yes
 
+    - name: Set PHP version for 16.04
+      set_fact:
+        php_version: 7
+      when: ansible_distribution_version == "16.04"
+
+    - name: Set PHP version for 14.04
+      set_fact:
+        php_version: 5
+      when: ansible_distribution_version == "14.04"
+
   roles:
     - common
     - swap
     - ntp
-    - fail2ban
     - nginx
-    - ssl
     - php-fpm
-    - hhvm
+#    - hhvm
     - mariadb
     - drush
-    - phpcodesniffer
+#    - phpcodesniffer
     - nodejs
+    - newrelic
+    - fail2ban
     - postfix
-    - jenkins
-    - gitlab
+#    - { role: elasticsearch, es_instance_name: "node1" }
+#    - jenkins
+#    - gitlab

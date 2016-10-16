@@ -3,5 +3,6 @@ location ~ \.(hh|php)$ {
     fastcgi_pass   unix:/var/run/hhvm/hhvm.sock;
     fastcgi_index  index.php;
     fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_read_timeout 300;
     include        fastcgi_params;
 }

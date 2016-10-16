@@ -8,6 +8,7 @@ pid = /var/run/hhvm/pid
 hhvm.server.file_socket=/var/run/hhvm/hhvm.sock
 hhvm.server.type = fastcgi
 hhvm.server.default_document = index.php
+hhvm.server.upload.upload_max_file_size = 1024M
 hhvm.log.use_log_file = true
 hhvm.log.file = /var/log/hhvm/error.log
 hhvm.repo.central.path = /var/run/hhvm/hhvm.hhbc

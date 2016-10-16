@@ -12,11 +12,16 @@ instance_env: CHANGE_ME
 instance_domain: CHANGE_ME
 instance_subdomain: CHANGE_ME
 
+letsencrypt_cert_create: true
+
+letsencrypt_cert_domains:
+  - "{{ instance_subdomain }}.{{ instance_domain }}"
+
 # Additional string that will be used for password generation.
-password_salt: CHANGE_ME
+password_salt: SecRet
 
 # Relative path for site. Without slashes.
-www_relative_dir: CHANGE_ME
+www_relative_dir: current
 
 # MySQL root password.
 mysql_root_pass: CHANGE_ME
@@ -28,18 +33,20 @@ notify_email: CHANGE_ME
 basic_auth_create: false
 basic_auth_password: "CHANGE_ME"
 
-instance_ssl: false
-instance_hhvm: true
+instance_ssl: true
+instance_hhvm: false
 
 # If instance user already exist then specify password.
 # In this case it'll create settings.php file.
 instance_user_pass: false
 
 # Resources folder name.
-add_settings_php_folder: default
+add_settings_php_folder: CHANGE_ME
 
 # Production URL is needed for files resources and reroute email. False if prod.
-production_url: "CHANGE_ME"
+production_url: CHANGE_ME
+# Google Analytics tracking code. Will not be used if instance is not prod.
+ga_tracking_code: CHANGE_ME
 # If not production this email will be used for rerouting.
 reroute_email_address: CHANGE_ME
 # Error level.

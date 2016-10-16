@@ -46,3 +46,6 @@
 
 - name: Copy VirtualHost template
   template: src=virtualhost_hhvm.j2 dest=/etc/nginx/sites-available/template-hhvm
+
+- name: Start HHVM
+  service: name=hhvm state=started

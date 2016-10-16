@@ -1,0 +1,29 @@
+[sshd]
+enabled = true
+
+[sshd-ddos]
+enabled = true
+
+[mysqld-auth]
+enabled = true
+logpath = /var/log/mysql/error.log
+
+[nginx-http-auth]
+enabled = true
+logpath = /var/log/nginx/error.log
+
+[postfix]
+enabled = true
+logpath = /var/log/mail.log
+
+[postfix-sasl]
+enabled = true
+logpath = /var/log/mail.log
+
+[drupal-auth]
+enabled = true
+logpath  = /var/log/syslog
+
+[pure-ftpd]
+enabled = true
+logpath  = /var/log/syslog

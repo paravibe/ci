@@ -1,4 +1,16 @@
 ---
+- name: Set distr version to php5
+  set_fact:
+    distr: "php5"
+    intsall_path: "/etc/php5"
+  when: php_version == 5
+
+- name: Set distr version to php7.0
+  set_fact:
+    distr: "php7.0"
+    intsall_path: "/etc/php/7.0"
+  when: php_version == 7
+
 - name: Generate new password
   shell: echo "{{ password_salt }}_$(date +%s)" | sha256sum | base64 | head -c 16; echo
   register: user_pass
@@ -29,8 +41,7 @@
 
 - name: Set zsh shell for user
   user: name={{ instance_user }} shell=/bin/zsh
-  when: zsh.stat.exists
-  when: user_create.changed
+  when: user_create.changed and zsh.stat.exists
 
 - name: Set pass if user exist
   set_fact:
@@ -60,7 +71,7 @@
     priv="{{ instance_user }}\_%.*:ALL,GRANT"
   notify:
     - print user pass
-  when: user_create.changed
+  when: (user_create.changed and mysql_root_pass != False)
 
 - name: Add MySQL database
   mysql_db: >
@@ -68,6 +79,7 @@
     login_password="{{ mysql_root_pass }}"
     name="{{ instance_user }}_{{ instance_name }}"
     state=present
+  when: mysql_root_pass != False
 
 - name: Create dir structure for user
   file: >

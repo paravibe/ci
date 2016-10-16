@@ -41,6 +41,7 @@ datadir		= /var/lib/mysql
 tmpdir		= /tmp
 lc-messages-dir	= /usr/share/mysql
 skip-external-locking
+skip-name-resolve
 #
 # Instead of skip-networking the default is now to listen only on
 # localhost which is more compatible and is not less secure.
@@ -110,7 +111,8 @@ max_binlog_size         = 100M
 
 innodb_buffer_pool_size = 2560M
 innodb_buffer_pool_instances = 2
-innodb_io_capacity = 750
+innodb_io_capacity = 3000
+wait_timeout = 86400
 
 [mysqldump]
 quick

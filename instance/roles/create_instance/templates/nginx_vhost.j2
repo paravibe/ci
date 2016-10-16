@@ -1,24 +1,38 @@
+{% if instance_ssl %}
 server {
-    listen 80;
-    {% if instance_ssl %}
+  listen 80;
+
+  server_name {{ instance_subdomain }}.{{ instance_domain }} www.{{ instance_subdomain }}.{{ instance_domain }};
+  return 301 https://$server_name$request_uri;
+}
+{% endif %}
+server {
+{% if instance_ssl %}
     listen 443 ssl;
-    {% endif %}
+{% else %}
+    listen 80;
+{% endif %}
 
     server_name {{ instance_subdomain }}.{{ instance_domain }} www.{{ instance_subdomain }}.{{ instance_domain }};
     root /home/{{ instance_user }}/www/{{ instance_env }}/{% if www_relative_dir is defined and www_relative_dir != false %}{{ www_relative_dir }}{% endif %};
     index index.php;
-    {% if instance_ssl %}
-    ssl_certificate /etc/nginx/ssl/nginx.crt;
-    ssl_certificate_key /etc/nginx/ssl/nginx.key;
-    {% endif %}
-    {% if basic_auth_create %}
+{% if instance_ssl %}
+
+    ssl_certificate /etc/letsencrypt/live/{{ letsencrypt_cert_domains[0] }}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{ letsencrypt_cert_domains[0] }}/privkey.pem;
+{% endif %}
+{% if basic_auth_create %}
 
     auth_basic "Restricted";
     auth_basic_user_file /home/{{ instance_user }}/www/{{ instance_env }}/.htpasswd;
-    {% endif %}
+{% endif %}
 
     access_log /home/{{ instance_user }}/www/{{ instance_env }}/logs/access.log;
     error_log /home/{{ instance_user }}/www/{{ instance_env }}/logs/error.log;
+
+    location ~ /.well-known {
+        allow all;
+    }
 
     location = /favicon.ico {
         log_not_found off;
@@ -69,6 +83,17 @@ server {
         log_not_found off;
     }
 
+    location ^~ /simplesaml {
+        alias /home/prod/www/prod/current/surfraysaml/www;
+        location ~ ^/simplesaml(?<phpfile>.+?\.php)(?<pathinfo>/.*)?$ {
+            include fastcgi_params;
+            fastcgi_split_path_info ^(.+?\.php)(/.+)$;
+            fastcgi_pass unix:/var/run/{{ distr }}-fpm.sock;
+            fastcgi_param SCRIPT_FILENAME $document_root$phpfile;
+            fastcgi_param PATH_INFO $fastcgi_path_info;
+        }
+    }
+
 {% if instance_hhvm %}
     location / {
         fastcgi_intercept_errors on;
@@ -78,14 +103,20 @@ server {
     }
 
     include /etc/nginx/php_fpm_fallback.conf;
-    {% else %}
+{% else %}
     location / {
-        try_files $uri =404;
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
-        fastcgi_index index.php;
-        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        include fastcgi_params;
-    }
+      try_files  $uri  $uri/  /index.php?$args;
+        location ~ \.php$ {
+           try_files $uri =404;
+{% if php_version == 5 %}
+           fastcgi_pass unix:/var/run/{{ distr }}-fpm.sock;
+{% else %}
+           fastcgi_pass unix:/var/run/php/{{ distr }}-fpm.sock;
 {% endif %}
-
+           fastcgi_index index.php;
+           fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+           include fastcgi_params;
+      }
+   }
+{% endif %}
 }

@@ -1,59 +1,94 @@
 ---
+- name: Set distr version to php5
+  set_fact:
+    distr: "php5"
+    intsall_path: "/etc/php5"
+  when: php_version == 5
+
+- name: Set distr version to php7.0
+  set_fact:
+    distr: "php7.0"
+    intsall_path: "/etc/php/7.0"
+  when: php_version == 7
+
 - name: Install php-fpm and deps 
   apt: name={{ item }} state=present
   with_items:
-    - php5-cli
-    - php5-fpm
-    - php5-mysql
-    - php5-gd
-    - php5-curl
+    - "{{ distr }}-cli"
+    - "{{ distr }}-fpm"
+    - "{{ distr }}-mysql"
+    - "{{ distr }}-gd"
+    - "{{ distr }}-curl"
+
+- name: Install php-xml
+  apt: name="{{ distr }}-xml" state=present
+  when: php_version == 7
 
 - name: Change memory limit
   replace:
     dest={{ item }}
     regexp="memory_limit = .+"
     replace="memory_limit = {{ php_memory_limit }}"
-  notify: restart php5-fpm
+  notify: restart php-fpm
   with_items:
-    - /etc/php5/cli/php.ini
-    - /etc/php5/fpm/php.ini
+    - "{{ intsall_path }}/cli/php.ini"
+    - "{{ intsall_path }}/fpm/php.ini"
 
 - name: Change upload max filesize
   replace:
     dest={{ item }}
     regexp="upload_max_filesize = .+"
     replace="upload_max_filesize = {{ php_upload_max_filesize }}"
-  notify: restart php5-fpm
+  notify: restart php-fpm
   with_items:
-    - /etc/php5/cli/php.ini
-    - /etc/php5/fpm/php.ini
+    - "{{ intsall_path }}/cli/php.ini"
+    - "{{ intsall_path }}/fpm/php.ini"
 
-- name: Change max execution time filesize
+- name: Change post max filesize
+  replace:
+    dest={{ item }}
+    regexp="post_max_size = .+"
+    replace="post_max_size = {{ php_upload_max_filesize }}"
+  notify: restart php-fpm
+  with_items:
+    - "{{ intsall_path }}/cli/php.ini"
+    - "{{ intsall_path }}/fpm/php.ini"
+
+- name: Change max execution time
   replace:
     dest={{ item }}
     regexp="max_execution_time = .+"
     replace="max_execution_time = {{ php_max_execution_time }}"
-  notify: restart php5-fpm
+  notify: restart php-fpm
   with_items:
-    - /etc/php5/cli/php.ini
-    - /etc/php5/fpm/php.ini
+    - "{{ intsall_path }}/cli/php.ini"
+    - "{{ intsall_path }}/fpm/php.ini"
+
+- name: Change max execution time
+  replace:
+    dest={{ item }}
+    regexp=";request_terminate_timeout = .+"
+    replace="request_terminate_timeout = {{ php_max_execution_time }}"
+  notify: restart php-fpm
+  with_items:
+    - "{{ intsall_path }}/fpm/pool.d/www.conf"
 
 - name: Change max input time filesize
   replace:
     dest={{ item }}
     regexp="max_input_time = .+"
     replace="max_input_time = {{ php_max_input_time }}"
-  notify: restart php5-fpm
+  notify: restart php-fpm
   with_items:
-    - /etc/php5/cli/php.ini
-    - /etc/php5/fpm/php.ini
+    - "{{ intsall_path }}/cli/php.ini"
+    - "{{ intsall_path }}/fpm/php.ini"
 
 - name: Set date timezone
   replace:
     dest={{ item }}
     regexp="(.|)date.timezone =(.+|)"
     replace="date.timezone = {{ php_date_timezone }}"
-  notify: restart php5-fpm
+  notify: restart php-fpm
   with_items:
-    - /etc/php5/cli/php.ini
-    - /etc/php5/fpm/php.ini
+    - "{{ intsall_path }}/cli/php.ini"
+    - "{{ intsall_path }}/fpm/php.ini"
