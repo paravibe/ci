@@ -1,13 +1,13 @@
 ---
 # Users.
 root_pass: CHANGE_ME
-root_comment: "CHANGE_ME"
+root_comment: CHANGE_ME
 sudo_user_name: CHANGE_ME
 sudo_user_pass: CHANGE_ME
-sudo_user_comment: "CHANGE_ME"
+sudo_user_comment: CHANGE_ME
 
 # Timezone.
-timezone: "CHANGE_ME"
+timezone: CHANGE_ME
 
 # Domain.
 server_name: "{{ ansible_hostname }}"
@@ -26,15 +26,6 @@ postfix_email: CHANGE_ME
 postfix_email_pass: CHANGE_ME
 postfix_notify_email: CHANGE_ME
 
-# SSL.
-ssl_certs_country: "CHANGE_ME"
-ssl_certs_locality: "CHANGE_ME"
-ssl_certs_organization: "CHANGE_ME"
-ssl_certs_state: "CHANGE_ME"
-ssl_certs_common_name: "{{ ansible_fqdn }}"
-ssl_certs_days: "1825"
-ssl_storage_path: "/etc/nginx/ssl"
-
 # Jenkins.
 jenkins_web_url: CHANGE_ME
 jenkins_user_name: CHANGE_ME
@@ -45,4 +36,7 @@ jenkins_pass_salt: CHANGE_ME
 # GitLab.
 gitlab_web_url: CHANGE_ME
 
-authorized_ssh_key: "CHANGE_ME"
+# New Relic
+new_relic_license_key: CHANGE_ME
+
+authorized_ssh_key: CHANGE_ME
