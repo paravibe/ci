@@ -20,8 +20,12 @@
     - "{{ distr }}-gd"
     - "{{ distr }}-curl"
 
-- name: Install php-xml
-  apt: name="{{ distr }}-xml" state=present
+- name: Install extra extensions
+  apt: name={{ item }} state=present
+  with_items:
+      - "{{ distr }}-xml"
+      - "{{ distr }}-mbstring"
+      - "{{ distr }}-zip"
   when: php_version == 7
 
 - name: Change memory limit
