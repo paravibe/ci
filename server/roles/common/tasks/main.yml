@@ -12,9 +12,12 @@
         owner=root
         group=root
         mode=0644
-        backup=yes
+        backup=no
   notify:
     - update timezone
+
+- name: Update timezone
+  command: timedatectl set-timezone "{{ timezone }}"
 
 - name: Install curl
   apt: name=curl state=present

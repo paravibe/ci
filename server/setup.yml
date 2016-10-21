@@ -21,11 +21,15 @@
     - name: Set PHP version for 16.04
       set_fact:
         php_version: 7
+        php_distr: "php7.0"
+        php_intsall_path: "/etc/php/7.0"
       when: ansible_distribution_version == "16.04"
 
     - name: Set PHP version for 14.04
       set_fact:
         php_version: 5
+        php_distr: "php5"
+        php_intsall_path: "/etc/php5"
       when: ansible_distribution_version == "14.04"
 
   roles:
@@ -34,14 +38,14 @@
     - ntp
     - nginx
     - php-fpm
-#    - hhvm
+    - hhvm
     - mariadb
     - drush
-#    - phpcodesniffer
     - nodejs
     - newrelic
     - fail2ban
     - postfix
+#    - phpcodesniffer
 #    - { role: elasticsearch, es_instance_name: "node1" }
 #    - jenkins
 #    - gitlab

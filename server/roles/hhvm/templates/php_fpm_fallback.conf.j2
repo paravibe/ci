@@ -1,6 +1,10 @@
 location @fallback {
     try_files      $uri = 404;
-    fastcgi_pass   unix:/var/run/php5-fpm.sock;
+{% if php_version == 7 %}
+    fastcgi_pass   unix:/run/php/{{ php_distr }}-fpm.sock;
+{% else %}
+    fastcgi_pass   unix:/run/{{ php_distr }}-fpm.sock;
+{% endif %}
     fastcgi_index  index.php;
     fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
     fastcgi_read_timeout 300;

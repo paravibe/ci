@@ -10,10 +10,10 @@
   register: release
 
 - name: Install HHVM Repository
-  apt_repository: repo='deb http://dl.hhvm.com/ubuntu {{ release.stdout }} main' state=present update_cache=yes
+  apt_repository: repo='deb http://dl.hhvm.com/ubuntu {{ release.stdout }} main' state=present
 
 - name: Install HHVM
-  apt: name=hhvm state=present
+  apt: name=hhvm state=present update_cache=yes
 
 - name: Stop HHVM
   service: name=hhvm state=stopped
@@ -24,11 +24,12 @@
 
 - name: Move upstart script
   shell: mv /etc/init.d/hhvm ~
-  when: init_hhvm.stat.exists == true
+  when: init_hhvm.stat.exists == true and ansible_distribution_version == "14.04"
 
 - name: Copy new upstart script
   template: src=init.hhvm.j2 dest=/etc/init/hhvm.conf
   notify: restart hhvm
+  when: ansible_distribution_version == "14.04"
 
 - name: Copy HHVM PHP settings
   template: src=php.ini.j2 dest=/etc/hhvm/php.ini

@@ -1,16 +1,4 @@
 ---
-- name: Set distr version to php5
-  set_fact:
-    distr: "php5"
-    intsall_path: "/etc/php5"
-  when: php_version == 5
-
-- name: Set distr version to php7.0
-  set_fact:
-    distr: "php7.0"
-    intsall_path: "/etc/php/7.0"
-  when: php_version == 7
-
 - name: Configure the New Relic apt repository
   shell: echo deb http://apt.newrelic.com/debian/ newrelic non-free > /etc/apt/sources.list.d/newrelic.list
 
@@ -40,8 +28,8 @@
 - name: Remove unnecesarry files
   file: path={{ item }} state=absent
   with_items:
-   - "{{ intsall_path }}/cli/conf.d/newrelic.ini"
-   - "{{ intsall_path }}/fpm/conf.d/newrelic.ini"
+   - "{{ php_intsall_path }}/cli/conf.d/newrelic.ini"
+   - "{{ php_intsall_path }}/fpm/conf.d/newrelic.ini"
 
 - name: Set license key
   replace:
@@ -50,7 +38,7 @@
     replace='newrelic.license = "{{ new_relic_license_key }}"'
   notify: restart php-fpm
   with_items:
-    - "{{ intsall_path }}/mods-available/newrelic.ini"
+    - "{{ php_intsall_path }}/mods-available/newrelic.ini"
 
 - name: Rename application
   replace:
@@ -59,4 +47,4 @@
     replace='newrelic.appname = "{{ ansible_hostname }}"'
   notify: restart php-fpm
   with_items:
-    - "{{ intsall_path }}/mods-available/newrelic.ini"
+    - "{{ php_intsall_path }}/mods-available/newrelic.ini"
