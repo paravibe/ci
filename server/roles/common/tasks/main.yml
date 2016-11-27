@@ -87,3 +87,14 @@
     line="{{ authorized_ssh_key }}"
     state=present
   when: authorized_ssh_key
+
+- name: Restrict password logins
+  replace:
+    dest=/etc/ssh/sshd_config
+    regexp=".?PasswordAuthentication .+"
+    replace="PasswordAuthentication no"
+  notify:
+    - ssh restart
+
+- name: Set root email
+  template: src=.forward.j2 dest=/root/.forward

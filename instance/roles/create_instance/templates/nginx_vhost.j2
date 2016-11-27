@@ -30,6 +30,10 @@ server {
     access_log /home/{{ instance_user }}/www/{{ instance_env }}/logs/access.log;
     error_log /home/{{ instance_user }}/www/{{ instance_env }}/logs/error.log;
 
+    location ~* \.json$ {
+      try_files $uri @rewrite;
+    }
+
     location ~ /.well-known {
         allow all;
     }
@@ -84,7 +88,7 @@ server {
     }
 
     location ^~ /simplesaml {
-        alias /home/prod/www/prod/current/surfraysaml/www;
+        alias /home/{{ instance_user }}/www/{{ instance_env }}/current/surfraysaml/www;
         location ~ ^/simplesaml(?<phpfile>.+?\.php)(?<pathinfo>/.*)?$ {
             include fastcgi_params;
             fastcgi_split_path_info ^(.+?\.php)(/.+)$;

@@ -32,7 +32,7 @@ $update_free_access = FALSE;
 /**
  * Salt for one-time login links and cancel links, form tokens, etc.
  */
-$drupal_hash_salt = '{{ '{{ instance_name }}_{{ instance_env }}'|hash('sha256') }}';
+$drupal_hash_salt = '{{ '{{ ansible_date_time.epoch }_{{ instance_user }}_{{ instance_name }}_{{ instance_env }}'|hash('sha256') }}';
 
 /**
  * Base URL (optional).

@@ -1,0 +1,5 @@
+---
+drupal_cron_renewal_frequency:
+  day: "*"
+  hour: '*'
+  minute: '*/5'

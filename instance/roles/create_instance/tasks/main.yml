@@ -124,3 +124,12 @@
     src="/etc/nginx/sites-available/{{ instance_env }}_{{ instance_name }}"
     dest="/etc/nginx/sites-enabled/{{ instance_env }}_{{ instance_name }}"
     state=link
+
+- name: Install drupal cron
+  cron: >
+    name="{{ instance_name }} {{ instance_env }} cron job"
+    day="{{ drupal_cron_renewal_frequency.day }}"
+    hour="{{ drupal_cron_renewal_frequency.hour }}"
+    minute="{{ drupal_cron_renewal_frequency.minute }}"
+    job="cd /home/{{ instance_user }}/www/{{ instance_env }}/current/{{ add_settings_php_folder }} && drush elysia-cron run > /dev/null 2>&1"
+  when: add_settings_php_folder != False
