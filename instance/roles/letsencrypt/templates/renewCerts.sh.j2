@@ -1,0 +1,16 @@
+#!/bin/sh
+# This script renews all the Let's Encrypt certificates.
+
+if ! /usr/local/share/letsencrypt/env/bin/letsencrypt renew > /var/log/letsencrypt/renew.log 2>&1 ; then
+    echo Automated renewal failed:
+    cat /var/log/letsencrypt/renew.log
+    exit 1
+fi
+
+if  /usr/sbin/nginx -t > /dev/null 2>&1; then
+    /usr/sbin/nginx -s reload
+    exit 0
+else
+    echo nginx conf failed
+    exit 1
+fi

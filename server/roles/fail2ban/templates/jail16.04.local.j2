@@ -1,32 +1,42 @@
 [DEFAULT]
 action = %(action_mwl)s
+bantime = 86400
+maxretry = 2
 
 [sshd]
 enabled = true
+maxretry = 2
 
 [sshd-ddos]
 enabled = true
+maxretry = 2
 
 [mysqld-auth]
 enabled = true
 logpath = /var/log/mysql/error.log
+maxretry = 2
 
 [nginx-http-auth]
 enabled = true
 logpath = /var/log/nginx/error.log
+maxretry = 2
 
 [postfix]
 enabled = true
 logpath = /var/log/mail.log
+maxretry = 2
 
 [postfix-sasl]
 enabled = true
 logpath = /var/log/mail.log
+maxretry = 2
 
 [drupal-auth]
 enabled = true
-logpath  = /var/log/syslog
+logpath = /var/log/syslog
+maxretry = 2
 
 [pure-ftpd]
 enabled = true
-logpath  = /var/log/syslog
+logpath = /var/log/syslog
+maxretry = 2

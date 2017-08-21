@@ -17,7 +17,17 @@
 - name: Copy SMTP authentication
   template: src=sasl_passwd.j2 dest=/etc/postfix/sasl/sasl_passwd mode=0400 owner=root group=root
   notify:
-    - postmap sasl
+    - restart postfix
+
+- name: Prepare sasl DB
+  shell: postmap /etc/postfix/sasl/sasl_passwd
+  sudo: yes
+
+- name: Copy postfix rewrite
+  template: src=rewrite.j2 dest=/etc/postfix/rewrite
+  notify:
+    - restart postfix
+    - send test email
 
 - name: Check if certificate exists
   stat: path=/etc/ssl/certs/Thawte_Premium_Server_CA.pem

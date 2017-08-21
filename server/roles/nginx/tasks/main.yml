@@ -5,19 +5,23 @@
 - name: Install nginx
   apt: name=nginx state=present update_cache=yes
 
+- name: Set nginx.conf path
+  set_fact:
+    conf_path: "/etc/nginx/nginx.conf"
+
 - name: Add settings
   replace:
-    dest=/etc/nginx/nginx.conf
-    regexp="# server_tokens off;"
-    replace="server_tokens off;"
+    dest: "{{ conf_path }}"
+    regexp: "# server_tokens off;"
+    replace: "server_tokens off;"
   notify: restart nginx
 
 - name: Add settings
   lineinfile:
-    dest=/etc/nginx/nginx.conf
-    insertafter="http {"
-    line="	client_max_body_size {{ nginx_client_max_body_size }};"
-    state=present
+    dest: "{{ conf_path }}"
+    insertafter: "http {"
+    line: "	client_max_body_size {{ nginx_client_max_body_size }};"
+    state: present
   notify: restart nginx
 
 - name: Copy nginx configuration template
@@ -31,3 +35,44 @@
 - name: Remove default virtual host
   file: path=/etc/nginx/sites-enabled/default state=absent
   notify: restart nginx
+
+- name: Add expiration block
+  blockinfile:
+    dest: "/etc/nginx/fastcgi_params"
+    marker: "# {mark} STATIC CACHE"
+    block: |
+      if ($args ~* \.(png|jpg|jpeg|gif|ico|hbs|woff)) {
+        expires 30d;
+      }
+      if ($args ~* \.(js|css)) {
+        expires -1;
+      }
+  notify: restart nginx
+
+- name: Enable gzip
+  lineinfile:
+    dest: "{{ conf_path }}"
+    regexp: '(#\s?|\A)?(gzip\so).+;'
+    line: "        gzip on;"
+  notify: restart nginx
+
+- name: Enable gzip_types
+  lineinfile:
+    dest: "{{ conf_path }}"
+    regexp: '#?\s?gzip_types.+;'
+    line: "        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript text/x-handlebars-template;"
+  notify: restart nginx
+
+- name: Perfect Forward Secrecy
+  shell: "openssl dhparam -out /etc/ssl/private/dhparam.pem 2048"
+  async: 1200
+  poll: 5
+  notify: reload nginx
+  tags:
+    - nginx-ssldh
+
+- name: Add ssl_dhparam.conf
+  template: src=ssl_dhparam.conf.j2 dest=/etc/nginx/conf.d/ssl_dhparam.conf
+  notify: reload nginx
+  tags:
+    - nginx-ssldh

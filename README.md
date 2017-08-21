@@ -2,7 +2,7 @@
 This is a collection of scripts that helps to build CI with GitLab and Jenkins.
 
 ## How to use
-- You must have Ubuntu 14.04 or 12.04.
+- You must have Ubuntu 16.04 or 14.04.
 - Edit hosts file and replace IP address to desired one (you must have access to this machine via SSH).
 - After that replace all CHANGE_ME placeholders in vars/vars.yml
 - And start by ansible-playbook go.yml
@@ -27,8 +27,8 @@ This is a collection of scripts that helps to build CI with GitLab and Jenkins.
 
 - **postfix_hostname** - hostname. E.g. example.com.
 - **postfix_relayhost** - relayhost. For Google use '[smtp.gmail.com]:587'.
-- **postfix_email** - email address which is used for sending mails. E.g. example@gmail.com.
-- **postfix_email_pass** - password for your postfix_email.
+- **postfix_user** - SMTP user name.
+- **postfix_user_pass** - password for your postfix_user.
 - **postfix_notify_email** - this email is not used in the system and only used for notification of successful tasks complete.
 
 - **ssl_certs_country** - certificate country. E.g. "UA".

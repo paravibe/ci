@@ -38,13 +38,13 @@
     - ntp
     - nginx
     - php-fpm
-    - hhvm
     - mariadb
     - drush
     - nodejs
     - newrelic
     - fail2ban
-    - postfix
+    - { role: postfix, tags: ['postfix'] }
+#    - hhvm
 #    - phpcodesniffer
 #    - { role: elasticsearch, es_instance_name: "node1" }
 #    - jenkins

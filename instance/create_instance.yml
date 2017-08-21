@@ -11,12 +11,16 @@
       set_fact:
         php_version: 7
       when: ansible_distribution_version == "16.04"
+      tags:
+        - always
 
     - name: Set PHP version for 14.04
       set_fact:
         php_version: 5
       when: ansible_distribution_version == "14.04"
+      tags:
+        - always
 
   roles:
     - { role: create_instance }
-    - { role: letsencrypt, when: (instance_ssl and letsencrypt_cert_create) }
+    - { role: letsencrypt, when: (instance_ssl and letsencrypt_cert_create), tags: ['ssl'] }

@@ -14,6 +14,15 @@
   mysql_db: name=test state=absent
   when: install_mariadb.changed
 
+- name: Delete remote MariaDB server user
+  mysql_user:
+    name: root
+    host: "{{ ansible_hostname }}"
+    login_user: root
+    login_password: ''
+    state: absent
+  when: install_mariadb.changed
+
 - name: Change root user password
   mysql_user: login_user=root
               login_password=''
@@ -22,7 +31,6 @@
               priv=*.*:ALL,GRANT
               host={{ item }}
   with_items:
-    - "{{ ansible_hostname }}"
     - 127.0.0.1
     - ::1
     - localhost

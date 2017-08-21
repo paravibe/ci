@@ -1,4 +1,9 @@
 ---
+- name: Check if php installed
+  shell: php -v
+  register: php_installed
+  ignore_errors: yes
+
 - name: Configure the New Relic apt repository
   shell: echo deb http://apt.newrelic.com/debian/ newrelic non-free > /etc/apt/sources.list.d/newrelic.list
 
@@ -21,15 +26,18 @@
 
 - name: Install newrelic-php5
   apt: name=newrelic-php5 state=present
+  when: php_installed.failed is undefined
 
 - name: Configure newrelic-php5
   shell: newrelic-install install
+  when: php_installed.failed is undefined
 
 - name: Remove unnecesarry files
   file: path={{ item }} state=absent
   with_items:
    - "{{ php_intsall_path }}/cli/conf.d/newrelic.ini"
    - "{{ php_intsall_path }}/fpm/conf.d/newrelic.ini"
+  when: php_installed.failed is undefined
 
 - name: Set license key
   replace:
@@ -39,6 +47,7 @@
   notify: restart php-fpm
   with_items:
     - "{{ php_intsall_path }}/mods-available/newrelic.ini"
+  when: php_installed.failed is undefined
 
 - name: Rename application
   replace:
@@ -48,3 +57,4 @@
   notify: restart php-fpm
   with_items:
     - "{{ php_intsall_path }}/mods-available/newrelic.ini"
+  when: php_installed.failed is undefined

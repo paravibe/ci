@@ -1,0 +1,33 @@
+[DEFAULT]
+action = %(action_mwl)s
+bantime = 86400
+maxretry = 2
+
+[ssh]
+enabled = true
+maxretry = 2
+
+[ssh-ddos]
+enabled = true
+maxretry = 2
+
+[nginx-http-auth]
+enabled = true
+maxretry = 2
+
+[postfix]
+enabled = true
+maxretry = 2
+
+[sasl]
+enabled = false
+maxretry = 2
+
+[mysqld-auth]
+enabled = true
+logpath = /var/log/mysql/error.log
+maxretry = 2
+
+[pure-ftpd]
+enabled = false
+maxretry = 2

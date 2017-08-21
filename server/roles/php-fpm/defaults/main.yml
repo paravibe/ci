@@ -4,3 +4,4 @@ php_upload_max_filesize: 1024M
 php_max_execution_time: 120
 php_max_input_time: 120
 php_date_timezone: "{{ timezone }}"
+php_max_input_vars: 50000

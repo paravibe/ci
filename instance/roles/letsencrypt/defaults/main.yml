@@ -10,4 +10,6 @@ letsencrypt_renewal_frequency:
   day: "*"
   hour: 0
   minute: 0
+# Must start with whitespace.
 letsencrypt_renewal_command_args: ''
+#/usr/local/share/letsencrypt/env/bin/letsencrypt --agree-tos --text -d "careyinstitute.eurekos.com" --email "max@mentorix.dk" --expand -a standalone auth

@@ -4,12 +4,16 @@
     distr: "php5"
     intsall_path: "/etc/php5"
   when: php_version == 5
+  tags:
+    - always
 
 - name: Set distr version to php7.0
   set_fact:
     distr: "php7.0"
     intsall_path: "/etc/php/7.0"
   when: php_version == 7
+  tags:
+    - always
 
 - name: Generate new password
   shell: echo "{{ password_salt }}_$(date +%s)" | sha256sum | base64 | head -c 16; echo
@@ -118,12 +122,16 @@
   template: src=nginx_vhost.j2 dest="/etc/nginx/sites-available/{{ instance_env }}_{{ instance_name }}"
   notify:
     - restart nginx
+  tags:
+    - nginxvhost
 
 - name: Enable vhost
   file: >
     src="/etc/nginx/sites-available/{{ instance_env }}_{{ instance_name }}"
     dest="/etc/nginx/sites-enabled/{{ instance_env }}_{{ instance_name }}"
     state=link
+  tags:
+    - nginxvhost
 
 - name: Install drupal cron
   cron: >
@@ -131,5 +139,5 @@
     day="{{ drupal_cron_renewal_frequency.day }}"
     hour="{{ drupal_cron_renewal_frequency.hour }}"
     minute="{{ drupal_cron_renewal_frequency.minute }}"
-    job="cd /home/{{ instance_user }}/www/{{ instance_env }}/current/{{ add_settings_php_folder }} && drush elysia-cron run > /dev/null 2>&1"
+    job="cd /home/{{ instance_user }}/www/{{ instance_env }}/current/sites/{{ add_settings_php_folder }} && drush elysia-cron run > /dev/null 2>&1"
   when: add_settings_php_folder != False

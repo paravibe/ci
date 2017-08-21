@@ -1,9 +1,9 @@
 {% if instance_ssl %}
 server {
-  listen 80;
+    listen 80;
 
-  server_name {{ instance_subdomain }}.{{ instance_domain }} www.{{ instance_subdomain }}.{{ instance_domain }};
-  return 301 https://$server_name$request_uri;
+    server_name {{ instance_subdomain }}.{{ instance_domain }} www.{{ instance_subdomain }}.{{ instance_domain }};
+    return 301 https://$server_name$request_uri;
 }
 {% endif %}
 server {
@@ -20,6 +20,8 @@ server {
 
     ssl_certificate /etc/letsencrypt/live/{{ letsencrypt_cert_domains[0] }}/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/{{ letsencrypt_cert_domains[0] }}/privkey.pem;
+
+    add_header Strict-Transport-Security "max-age=31536000";
 {% endif %}
 {% if basic_auth_create %}
 
@@ -35,6 +37,7 @@ server {
     }
 
     location ~ /.well-known {
+        root /home/{{ instance_user }}/www/{{ instance_env }};
         allow all;
     }
 
@@ -80,7 +83,7 @@ server {
         try_files $uri @rewrite;
     }
 
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico) {
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|hbs|woff) {
         expires max;
         add_header Pragma public;
         add_header Cache-Control "public";
@@ -92,7 +95,11 @@ server {
         location ~ ^/simplesaml(?<phpfile>.+?\.php)(?<pathinfo>/.*)?$ {
             include fastcgi_params;
             fastcgi_split_path_info ^(.+?\.php)(/.+)$;
+{% if php_version == 5 %}
             fastcgi_pass unix:/var/run/{{ distr }}-fpm.sock;
+{% else %}
+            fastcgi_pass unix:/var/run/php/{{ distr }}-fpm.sock;
+{% endif %}
             fastcgi_param SCRIPT_FILENAME $document_root$phpfile;
             fastcgi_param PATH_INFO $fastcgi_path_info;
         }
@@ -118,9 +125,10 @@ server {
            fastcgi_pass unix:/var/run/php/{{ distr }}-fpm.sock;
 {% endif %}
            fastcgi_index index.php;
-           fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+           #fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+           fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
            include fastcgi_params;
-      }
-   }
+        }
+    }
 {% endif %}
 }

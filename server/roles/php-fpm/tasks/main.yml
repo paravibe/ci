@@ -84,3 +84,13 @@
   with_items:
     - "{{ php_intsall_path }}/cli/php.ini"
     - "{{ php_intsall_path }}/fpm/php.ini"
+
+- name: Set max input vars
+  replace:
+    dest={{ item }}
+    regexp="(;\s|.|)max_input_vars = .+"
+    replace="max_input_vars = {{ php_max_input_vars }}"
+  notify: restart php-fpm
+  with_items:
+    - "{{ php_intsall_path }}/cli/php.ini"
+    - "{{ php_intsall_path }}/fpm/php.ini"
